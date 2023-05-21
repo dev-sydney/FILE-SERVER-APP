@@ -1,8 +1,12 @@
+const crypto = require('crypto');
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const catchAsyncError = require('./../utils/catchAsyncError');
 const GlobalAppError = require('./../utils/GlobalAppError');
+const Email = require('./../utils/Email');
+
 const pool = require('./../model/database');
 /**
  * Fucntion responsible for signing the JWTs
@@ -99,4 +103,69 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
   );
 
   createSendAuthToken(queryResults[0], 201, req, res);
+});
+
+exports.forgotPassword = catchAsyncError(async (req, res, next) => {
+  const [queryResults] = await pool.query(
+    `SELECT * FROM Users WHERE email_address = ? LIMIT 1`,
+    [req.body.email_address]
+  );
+
+  const [user] = queryResults;
+
+  if (!user)
+    return next(
+      new GlobalAppError('No user with this email exists, try again !', 404)
+    );
+
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  let passwordResetExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+  passwordResetExpiresAt = passwordResetExpiresAt
+    .toISOString()
+    .split('T')
+    .join(' ')
+    .replace('Z', '');
+
+  await pool.query(
+    `UPDATE Users SET reset_password_token = ?,password_reset_expires = ? WHERE email_address = ? `,
+    [resetPasswordToken, passwordResetExpiresAt, user.email_address]
+  );
+
+  //TODO: Set the URL to which the password would be reset
+  const passwordResetURL = `${req.protocol}://${req.get(
+    'host'
+  )}/api/v1/users/reset-password/${resetToken}`;
+
+  const emailFrom = `Sydney from file-server ${process.env.MAIL_FROM}`;
+
+  try {
+    await new Email(
+      user,
+      passwordResetURL,
+      emailFrom,
+      user.email_address
+    ).sendPasswordResetMail();
+
+    res.status(200).json({
+      status: 'success',
+      message: `We've sent you an email, please check your inbox`,
+    });
+  } catch (err) {
+    //EDGE-CASE: IF THERES WAS AN ISSUE SENDING THE EMAIL
+    await pool.query(
+      `UPDATE Users SET reset_password_token=?,password_reset_expires=? WHERE email_address = ?`,
+      [null, null, req.body.email_address]
+    );
+
+    console.log(err);
+    return next(
+      new GlobalAppError('Error sending Email, please try again...', 500)
+    );
+  }
 });
