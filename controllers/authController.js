@@ -169,3 +169,58 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
     );
   }
 });
+
+exports.resetPassword = catchAsyncError(async (req, res, next) => {
+  //EDGE-CASE: If the reset token is absent
+  if (!req.params.resetToken || req.params.resetToken === '')
+    return next(
+      new GlobalAppError('Password reset token missing,please try again', 400)
+    );
+
+  //EDGE-CASE: If the passwords don't match
+  if (req.body.password !== req.body.password_confirm)
+    return next(
+      new GlobalAppError('Sorry,passwords do not match,please try again', 400)
+    );
+
+  let currentDate = new Date(Date.now())
+    .toISOString()
+    .split('T')
+    .join(' ')
+    .replace('Z', '');
+
+  const cryptedResetToken = crypto
+    .createHash('sha256')
+    .update(req.params.resetToken)
+    .digest('hex');
+
+  const [queryResults] = await pool.query(
+    'SELECT * FROM Users WHERE reset_password_token=? AND password_reset_expires >= ?',
+    [cryptedResetToken, currentDate]
+  );
+  const [user] = queryResults;
+  if (!user)
+    return next(new GlobalAppError('Invalid token or expired token', 400));
+
+  const hashedPassword = await bcrypt.hash(req.body.password, 12);
+
+  const [updateCommandResult] = await pool.query(
+    `UPDATE Users SET user_password =?,reset_password_token=?,password_reset_expires=? WHERE email_address =?`,
+    [hashedPassword, null, null, user.email_address]
+  );
+  //EDGE-CASE: IF no changes were made
+  if (updateCommandResult.changedRows === 0) {
+    return next(
+      new GlobalAppError(
+        "Sorry, were'e a hard time resetting your password, please try again",
+        400
+      )
+    );
+  }
+
+  res.status(200).json({
+    status: 'success',
+    message:
+      'Password reset successfully, you can now login with your new password.',
+  });
+});
