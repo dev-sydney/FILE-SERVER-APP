@@ -14,6 +14,13 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
+/**
+ * Sends auth tokens,cookies & some user-related data to the client
+ * @param {*} user
+ * @param {*} statusCode
+ * @param {*} req
+ * @param {*} res
+ */
 const createSendAuthToken = (user, statusCode, req, res) => {
   const token = signToken(user.user_id);
 
@@ -59,4 +66,37 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
   }
 
   createSendAuthToken(user, 200, req, res);
+});
+
+exports.signupUser = catchAsyncError(async (req, res, next) => {
+  //EDGE-CASE: if passwords entered don't match
+  if (req.body.user_password !== req.body.password_confirm)
+    return next(
+      new GlobalAppError('Passwords do not match, please try again', 400)
+    );
+
+  const obj = { ...req.body };
+  //TODO: Hash the passowrd
+  obj.user_password = await bcrypt.hash(obj.user_password, 12);
+
+  delete obj['password_confirm'];
+
+  //TODO: Setting the column names for the SQL insert commmand from the req.body
+  let columns = Object.keys(obj).join(',');
+
+  let questionMarkPlaceholders = Object.values(obj)
+    .map((el) => '?')
+    .join(','); //Returns '?,?,?'
+
+  const [insertCommandResults] = await pool.query(
+    `INSERT INTO  Users(${columns}) VALUES(${questionMarkPlaceholders})`,
+    [...Object.values(obj)]
+  );
+
+  const [queryResults] = await pool.query(
+    `SELECT * FROM Users WHERE user_id = ?`,
+    [insertCommandResults.insertId]
+  );
+
+  createSendAuthToken(queryResults[0], 201, req, res);
 });
