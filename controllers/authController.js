@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { promisify } = require('util');
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -53,6 +54,9 @@ const createSendAuthToken = (user, statusCode, req, res) => {
   });
 };
 
+/**
+ * Router handler for handling login requests
+ */
 exports.loginUser = catchAsyncError(async (req, res, next) => {
   const [result] = await pool.query(
     'SELECT * FROM Users WHERE email_address=?',
@@ -72,6 +76,9 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
   createSendAuthToken(user, 200, req, res);
 });
 
+/**
+ * Router handler for handling signup requests
+ */
 exports.signupUser = catchAsyncError(async (req, res, next) => {
   //EDGE-CASE: if passwords entered don't match
   if (req.body.user_password !== req.body.password_confirm)
@@ -105,6 +112,9 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
   createSendAuthToken(queryResults[0], 201, req, res);
 });
 
+/**
+ * Route handler for handling requests to forget passwords
+ */
 exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   const [queryResults] = await pool.query(
     `SELECT * FROM Users WHERE email_address = ? LIMIT 1`,
@@ -170,6 +180,10 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   }
 });
 
+/**
+ * Route handler for resetting the users password
+ */
+
 exports.resetPassword = catchAsyncError(async (req, res, next) => {
   //EDGE-CASE: If the reset token is absent
   if (!req.params.resetToken || req.params.resetToken === '')
@@ -224,3 +238,71 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
       'Password reset successfully, you can now login with your new password.',
   });
 });
+
+/**
+ * Middleware function for authenticating users
+ */
+exports.authenticateUser = catchAsyncError(async (req, res, next) => {
+  let authToken;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    authToken = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.dds_jwt) {
+    authToken = req.cookies.dds_jwt;
+  }
+
+  //EDGE-CASE: If the auth token is missing from the request
+  if (!authToken) {
+    return next(
+      new GlobalAppError(
+        'You do not have access to this route! please try logging in again',
+        401
+      )
+    );
+  }
+
+  const decodedPayload = await promisify(jwt.verify)(
+    authToken,
+    process.env.JWT_SECRET
+  );
+
+  const [queryResults] = await pool.query(
+    `SELECT * FROM Users WHERE user_id = ?`,
+    [decodedPayload.id]
+  );
+
+  const [stillExistingUser] = queryResults;
+
+  //EDGE-CASE: Check the user still exists in the DB
+  if (!stillExistingUser) {
+    return next(
+      new GlobalAppError('Invalid credentials or user no longer exists', 403)
+    );
+  }
+  //TODO: attach the user data to the request body
+  req.user = stillExistingUser;
+
+  next();
+});
+
+/**
+ * Middleware controls the authorization of actions on the API
+ * @param  {...any} privileges arbitrary collection of authorized user roles
+ * @returns middleware function that determines whether the user is authorized to make a request to certain routes
+ */
+exports.restrictAccessTo =
+  (...privileges) =>
+  (req, res, next) => {
+    if (!privileges.includes(req.user.privilege)) {
+      return next(
+        new GlobalAppError(
+          "You don't have permission to perform this action",
+          401
+        )
+      );
+    }
+    next();
+  };
