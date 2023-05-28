@@ -14,5 +14,8 @@ router
   .post(clientsController.addClientContact)
   .get(clientsController.getAllClientsContacts);
 
-router.route('/:client_id').patch(clientsController.updateClientContact);
+router
+  .route('/:client_id')
+  .patch(clientsController.updateClientContact)
+  .delete(clientsController.deleteClientContact);
 module.exports = router;
