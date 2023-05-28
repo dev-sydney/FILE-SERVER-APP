@@ -15,6 +15,7 @@ router
   )
   .get(
     authController.restrictAccessTo('business'),
+    filesController.checkTitleDescriptionParameters,
     filesController.getFilesForFeedPage
   );
 
