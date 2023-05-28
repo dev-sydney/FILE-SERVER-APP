@@ -46,3 +46,42 @@ exports.getAllClientsContacts = catchAsyncError(async (req, res, next) => {
     clientContacts: queryResults,
   });
 });
+
+/**
+ * route handler for handling for updating client resources
+ */
+exports.updateClientContact = catchAsyncError(async (req, res, next) => {
+  //EDGE-CASE: If the client_id is absent from the req.params or is an empty string
+  if (!req.params.client_id || req.params.client_id === '')
+    return next(
+      new GlobalAppError(
+        'No contact was selected,please select one and try again',
+        400
+      )
+    );
+
+  const obj = { ...req.body };
+
+  //TODO: Get rid of fields that have an empty string value
+  Object.keys(obj).forEach((curField) => {
+    if (obj[curField] === '') delete obj[curField];
+  });
+  //TODO: Set the columns to be updated
+  const columns = Object.keys(obj).join('=?,') + '=?';
+
+  //TODO: Make the update
+  const [updateCommandResult] = await pool.query(
+    `UPDATE Clients SET ${columns} WHERE client_id = ?`,
+    [...Object.values(obj), +req.params.client_id]
+  );
+
+  if (updateCommandResult.affectedRows > 0) {
+    res.status(200).json({
+      message: 'Contact updated successfully',
+    });
+  } else {
+    return next(
+      new GlobalAppError('Trouble updating the contact, please try again', 400)
+    );
+  }
+});
