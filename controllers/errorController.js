@@ -6,9 +6,11 @@ const GlobalAppError = require('./../utils/GlobalAppError');
  * @returns
  */
 const handleDuplicateFields = (errClone) => {
-  let errorMsg = errClone.sqlMessage.includes('email_address')
-    ? 'An account with that email already exists'
-    : 'Document title is already taken';
+  let errorMsg =
+    errClone.sqlMessage.includes('email_address') ||
+    errClone.sqlMessage.includes('client_email')
+      ? 'An account with that email already exists'
+      : 'Document title is already taken';
 
   return new GlobalAppError(errorMsg, 400);
 };
