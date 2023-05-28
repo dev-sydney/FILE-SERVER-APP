@@ -31,3 +31,18 @@ exports.addClientContact = catchAsyncError(async (req, res, next) => {
     );
   }
 });
+
+/**
+ * Route handler that handles requests to the route responsible for reading all the
+ * clients of a business
+ */
+exports.getAllClientsContacts = catchAsyncError(async (req, res, next) => {
+  const [queryResults] = await pool.query(
+    `SELECT * FROM Clients WHERE user_id = ?`,
+    [req.user.user_id]
+  );
+
+  res.status(200).json({
+    clientContacts: queryResults,
+  });
+});
