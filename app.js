@@ -6,6 +6,7 @@ const errorController = require('./controllers/errorController');
 
 const userRouter = require('./routes/userRoutes');
 const fileRouter = require('./routes/fileRoutes');
+const clientRouter = require('./routes/clientsRoutes');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/files', fileRouter);
+app.use('/api/v1/clients', clientRouter);
 
 app.use(errorController);
 
