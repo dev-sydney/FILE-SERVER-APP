@@ -13,4 +13,6 @@ router
   .route('/')
   .post(clientsController.addClientContact)
   .get(clientsController.getAllClientsContacts);
+
+router.route('/:client_id').patch(clientsController.updateClientContact);
 module.exports = router;
