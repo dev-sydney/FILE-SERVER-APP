@@ -38,7 +38,7 @@ exports.addClientContact = catchAsyncError(async (req, res, next) => {
  */
 exports.getAllClientsContacts = catchAsyncError(async (req, res, next) => {
   const [queryResults] = await pool.query(
-    `SELECT * FROM Clients WHERE user_id = ?`,
+    `SELECT * FROM Clients WHERE user_id = ? AND client_status = 1`,
     [req.user.user_id]
   );
 
@@ -48,7 +48,7 @@ exports.getAllClientsContacts = catchAsyncError(async (req, res, next) => {
 });
 
 /**
- * route handler for handling for updating client resources
+ * route handler for handling the updating client resources
  */
 exports.updateClientContact = catchAsyncError(async (req, res, next) => {
   //EDGE-CASE: If the client_id is absent from the req.params or is an empty string
@@ -82,6 +82,34 @@ exports.updateClientContact = catchAsyncError(async (req, res, next) => {
   } else {
     return next(
       new GlobalAppError('Trouble updating the contact, please try again', 400)
+    );
+  }
+});
+/**
+ * route handler for handling the deleting client resources
+ */
+exports.deleteClientContact = catchAsyncError(async (req, res, next) => {
+  //EDGE-CASE: If the client_id is absent from the req.params or is an empty string
+  if (!req.params.client_id || req.params.client_id === '')
+    return next(
+      new GlobalAppError(
+        'No contact was selected,please select one and try again',
+        400
+      )
+    );
+
+  const [updateCommandResult] = await pool.query(
+    `UPDATE Clients SET client_status = false WHERE client_id = ?`,
+    [+req.params.client_id]
+  );
+
+  if (updateCommandResult.affectedRows > 0) {
+    res.status(204).json({
+      message: 'Contact deleted successfully',
+    });
+  } else {
+    return next(
+      new GlobalAppError('Trouble deleting the contact, please try again', 400)
     );
   }
 });
