@@ -7,10 +7,10 @@ const router = express.Router();
 
 router.use(authController.authenticateUser);
 
+router.use(authController.restrictAccessTo('business'));
+
 router
   .route('/')
-  .post(
-    authController.restrictAccessTo('business'),
-    clientsController.addClientContact
-  );
+  .post(clientsController.addClientContact)
+  .get(clientsController.getAllClientsContacts);
 module.exports = router;
