@@ -2,11 +2,19 @@ const nodemailer = require('nodemailer');
 const htmlToText = require('html-to-text');
 
 const createEmailTemplate = require('./../utils/createEmailTemplate');
+const accountVerificationTemplate = require('./../utils/createAccVerificationTemplate');
 
 module.exports = class Email {
+  /**
+   *
+   * @param {*} user The current user that is signing up
+   * @param {*} url the URL that will be set as the href of the call-to-action button link in the email
+   * @param {*} from the sender of the email
+   * @param {*} to The recipient of the mail
+   */
   constructor(user, url, from, to) {
     this.to = to;
-    this.userName = user.user_name.split(' ')[0];
+    this.userName = user?.user_name?.split(' ')[0];
     this.url = url;
     this.from = from;
   }
@@ -62,5 +70,24 @@ module.exports = class Email {
       'Reset your password',
       firstParagraph
     );
+  }
+  /**
+   * This method sends the email with the verification code to the users emaill
+   * @param {String} verificationCode the unencrypted verification code
+   */
+  async sendAccountVerificationMail(verificationCode) {
+    const html = accountVerificationTemplate(this.url, verificationCode);
+
+    let subject = 'Account verification for DDS';
+
+    const emailOptions = {
+      from: this.from,
+      to: this.to,
+      subject,
+      html,
+      text: htmlToText.htmlToText(html),
+    };
+
+    await this.newTransport().sendMail(emailOptions);
   }
 };
