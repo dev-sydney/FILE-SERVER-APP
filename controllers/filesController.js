@@ -58,14 +58,50 @@ exports.addNewFile = catchAsyncError(async (req, res, next) => {
 });
 
 /**
+ * This middleware function checks if theres a query paramter for the title and file_description
+ */
+exports.checkTitleDescriptionParameters = (req, res, next) => {
+  let queryStr;
+
+  //EDGE-CASE: if theres query parameter for the file_description or the title
+  if (req.query.title || req.query.file_description) {
+    queryStr = 'SELECT * FROM Files WHERE user_id = ? AND ';
+
+    //EDGE-CASE: if parameter contains only one of the two fields
+    if (Object.keys(req.query).length === 1) {
+      Object.keys(req.query).forEach((curField) => {
+        queryStr = queryStr.concat(
+          `${curField} LIKE '%${req.query[curField]}%'`
+        );
+      });
+    }
+
+    //EDGE-CASE: if the paramter includes both fields
+    if (Object.keys(req.query).length > 1) {
+      Object.keys(req.query).forEach((curField) => {
+        queryStr = queryStr.concat(
+          `${curField} LIKE '%${req.query[curField]}%' OR `
+        );
+      });
+
+      queryStr = queryStr.slice(0, -3); //NOTE: This removes the last 3 characters in the query string - 'OR '
+    }
+  }
+
+  req.queryString = queryStr;
+  next();
+};
+
+/**
  * Middle-ware function for reading file meta data from the database for the feed page
  */
 exports.getFilesForFeedPage = catchAsyncError(async (req, res, next) => {
+  let queryStr = req.queryString
+    ? req.queryString
+    : `SELECT * FROM Files WHERE user_id = ? AND file_status = 1 ORDER BY created_at DESC`;
+
   //TODO: Perform the query as a business account
-  const [queryResults] = await pool.query(
-    `SELECT * FROM Files WHERE user_id = ? AND file_status = 1 ORDER BY created_at DESC`,
-    [req.user.user_id]
-  );
+  const [queryResults] = await pool.query(queryStr, [req.user.user_id]);
 
   res.status(200).json({
     userFiles: queryResults,
