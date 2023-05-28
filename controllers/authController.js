@@ -26,7 +26,13 @@ const signToken = (id) =>
  * @param {*} req
  * @param {*} res
  */
-const createSendAuthToken = (user, statusCode, req, res) => {
+const createSendAuthToken = (
+  user,
+  statusCode,
+  req,
+  res,
+  isForVerification = null
+) => {
   const token = signToken(user.user_id);
 
   const cookieOptions = {
@@ -47,11 +53,18 @@ const createSendAuthToken = (user, statusCode, req, res) => {
     user.reset_password_token =
       undefined;
 
-  res.status(statusCode).json({
-    status: `${statusCode}`.startsWith('2') ? 'success' : 'fail',
-    token,
-    user,
-  });
+  if (isForVerification) {
+    res.status(200).json({
+      token,
+      message: "We've sent you a verification code, plase check your inbox",
+    });
+  } else {
+    res.status(statusCode).json({
+      status: `${statusCode}`.startsWith('2') ? 'success' : 'fail',
+      token,
+      user,
+    });
+  }
 };
 
 /**
@@ -90,6 +103,26 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
   //TODO: Hash the passowrd
   obj.user_password = await bcrypt.hash(obj.user_password, 12);
 
+  //TODO: Create the verification code of 6 digits
+  const verificationCode = Math.floor(
+    Math.random() * (999999 - 100000) + 100000
+  ).toString();
+
+  //TODO: Hash the verification code and add it to obj
+  obj.verification_code = crypto
+    .createHash('sha256')
+    .update(verificationCode)
+    .digest('hex');
+
+  //TODO: set the expiration for the verification code
+  let verificationCodeExipresAt = new Date(Date.now() + 10 * 60 * 1000); //user gets 10 mins to verify their account
+
+  obj.verification_expires_at = verificationCodeExipresAt
+    .toISOString()
+    .split('T')
+    .join(' ')
+    .replace('Z', '');
+
   delete obj['password_confirm'];
 
   //TODO: Setting the column names for the SQL insert commmand from the req.body
@@ -109,7 +142,33 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
     [insertCommandResults.insertId]
   );
 
-  createSendAuthToken(queryResults[0], 201, req, res);
+  const verificationURL = `${req.protocol}://${req.get(
+    'host'
+  )}/api/v1/users/verification/`;
+
+  const emailFrom = `Lizzy from DDS ${process.env.MAIL_FROM}`;
+
+  try {
+    await new Email(
+      null,
+      verificationURL,
+      emailFrom,
+      req.body.email_address
+    ).sendAccountVerificationMail(verificationCode);
+
+    createSendAuthToken(queryResults[0], 201, req, res, true);
+  } catch (err) {
+    //EDGE-CASE: If there was an issue that occurred when sending the mail
+    await pool.query(`DELETE FROM Users WHERE user_id = ?`, [
+      insertCommandResults.insertId,
+    ]);
+
+    console.log(err);
+    return next(
+      new GlobalAppError('Error sending Email, please try again...', 500)
+    );
+  }
+  // createSendAuthToken(queryResults[0], 201, req, res);
 });
 
 /**
@@ -282,6 +341,14 @@ exports.authenticateUser = catchAsyncError(async (req, res, next) => {
       new GlobalAppError('Invalid credentials or user no longer exists', 403)
     );
   }
+
+  //EDGE-CASE: Check if the business account is not verified
+  if (
+    stillExistingUser.is_verified === 0 &&
+    stillExistingUser.privilege === 'business'
+  ) {
+    return next(new GlobalAppError('You account has not been verified', 401));
+  }
   //TODO: attach the user data to the request body
   req.user = stillExistingUser;
 
@@ -306,3 +373,45 @@ exports.restrictAccessTo =
     }
     next();
   };
+
+/**
+ * Route handler for verifying user accounts
+ */
+exports.verifyAccount = catchAsyncError(async (req, res, next) => {
+  //EDGE-CASE: If the verification code is missing
+  if (!req.body.verification_code || req.body.verification_code === '')
+    return next(
+      new GlobalAppError('No verification code sent, please try again', 400)
+    );
+
+  let currentDate = new Date(Date.now())
+    .toISOString()
+    .split('T')
+    .join(' ')
+    .replace('Z', '');
+
+  const cryptedVerificationCode = crypto
+    .createHash('sha256')
+    .update(req.body.verification_code)
+    .digest('hex');
+
+  const [updateCommandResult] = await pool.query(
+    `UPDATE Users SET is_verified=?,verification_expires_at=?,verification_code=?
+     WHERE user_id=? AND verification_code=? AND verification_expires_at>=?`,
+    [true, null, null, req.user.user_id, cryptedVerificationCode, currentDate]
+  );
+
+  if (updateCommandResult.affectedRows < 1) {
+    return next(
+      new GlobalAppError(
+        'Incorrect code or account verification time window passed.',
+        400
+      )
+    );
+  }
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Account verified successfully.',
+  });
+});
