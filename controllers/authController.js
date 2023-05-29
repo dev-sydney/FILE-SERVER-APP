@@ -415,3 +415,52 @@ exports.verifyAccount = catchAsyncError(async (req, res, next) => {
     message: 'Account verified successfully.',
   });
 });
+
+/**
+ *Route handler for handling PATCH requests to the route for updating user passwords
+ */
+exports.updateUserPassword = catchAsyncError(async (req, res, next) => {
+  //EDGE-CASE:If the new password the doesn't match the its password confirm
+  if (req.body.newPassword !== req.body.passwordConfirm)
+    return next(
+      new GlobalAppError(
+        "password and confirm passwords, don't match, please try again",
+        400
+      )
+    );
+
+  const [queryResults] = await pool.query(
+    `SELECT * FROM Users WHERE user_id = ?`,
+    [req.user.user_id]
+  );
+
+  const [user] = queryResults;
+
+  //EDGE-CASE:If the current password doesn't match what is in the database
+  if (!(await bcrypt.compare(req.body.currentPassword, user.user_password))) {
+    return next(
+      new GlobalAppError('Current password is incorrect, please try again', 400)
+    );
+  }
+
+  //TODO: Hash the new password and update the record with it
+  const hashedPassword = await bcrypt.hash(req.body.newPassword, 12);
+
+  const [updateCommandResult] = await pool.query(
+    'UPDATE Users SET user_password = ? WHERE user_id = ?',
+    [hashedPassword, user.user_id]
+  );
+
+  if (updateCommandResult.affectedRows > 0) {
+    res.status(200).json({
+      message: 'Password updated successfully',
+    });
+  } else {
+    return next(
+      new GlobalAppError(
+        'Sorry, password update was not successful, please try again',
+        400
+      )
+    );
+  }
+});
