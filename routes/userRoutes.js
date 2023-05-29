@@ -11,12 +11,15 @@ router.route('/signup').post(authController.signupUser);
 router.route('/forgot-password').post(authController.forgotPassword);
 router.patch('/reset-password/:resetToken', authController.resetPassword);
 
+router.use(authController.authenticateUser);
+
 router
   .route('/verification')
   .post(
-    authController.authenticateUser,
     authController.restrictAccessTo('business'),
     authController.verifyAccount
   );
+
+router.route('/password-update').patch(authController.updateUserPassword);
 
 module.exports = router;
