@@ -31,4 +31,6 @@ router
     userController.updateAccount
   );
 
+router.get('/logout', authController.logoutUser);
+
 module.exports = router;
