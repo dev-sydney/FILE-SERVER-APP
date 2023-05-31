@@ -464,3 +464,14 @@ exports.updateUserPassword = catchAsyncError(async (req, res, next) => {
     );
   }
 });
+
+exports.logoutUser = catchAsyncError(async (req, res, next) => {
+  res.cookie('dds_jwt', 'cookieOverWritingText', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+  });
+});
