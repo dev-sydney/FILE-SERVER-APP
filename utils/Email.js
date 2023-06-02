@@ -3,6 +3,7 @@ const htmlToText = require('html-to-text');
 
 const createEmailTemplate = require('./../utils/createEmailTemplate');
 const accountVerificationTemplate = require('./../utils/createAccVerificationTemplate');
+const fileShareTemplate = require('./../utils/fileShareTemplate');
 
 module.exports = class Email {
   /**
@@ -86,6 +87,27 @@ module.exports = class Email {
       subject,
       html,
       text: htmlToText.htmlToText(html),
+    };
+
+    await this.newTransport().sendMail(emailOptions);
+  }
+
+  /**
+   * Function sends a batch email, which conatins the files which are being shared
+   * @param {String} subject The subject of the email
+   * @param {String} caption A breif description of the files being shared
+   * @param {Array} attachments File attachments
+   */
+  async sendFileToClients(subject, caption, attachments) {
+    const html = fileShareTemplate(caption);
+
+    const emailOptions = {
+      from: this.from,
+      to: this.to,
+      text: htmlToText.htmlToText(html),
+      subject,
+      html,
+      attachments,
     };
 
     await this.newTransport().sendMail(emailOptions);
