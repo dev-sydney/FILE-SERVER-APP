@@ -5,6 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "view": "npm start --prefix view",
+    "dev": "concurrently \"npm run server\" \"cd ./view && npm run start\"",
     "server": "nodemon server.js"
   },
   "author": "Sydney Otutey Agbenu",
