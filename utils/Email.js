@@ -25,18 +25,26 @@ module.exports = class Email {
    * @returns an email transport object
    */
   newTransport() {
-    if (process.env.NODE_ENV === 'production') {
-      //production email service
-    } else {
-      return nodemailer.createTransport({
-        host: process.env.MAIL_HOST,
-        port: process.env.MAIL_PORT,
-        auth: {
-          user: process.env.MAIL_USER,
-          pass: process.env.MAIL_PASS,
-        },
-      });
-    }
+    return nodemailer.createTransport({
+      host: process.env.MAIL_HOST,
+      port: process.env.MAIL_PORT,
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+    // if (process.env.NODE_ENV === 'production') {
+    //   //production email service
+    // } else {
+    //   return nodemailer.createTransport({
+    //     host: process.env.MAIL_HOST,
+    //     port: process.env.MAIL_PORT,
+    //     auth: {
+    //       user: process.env.MAIL_USER,
+    //       pass: process.env.MAIL_PASS,
+    //     },
+    //   });
+    // }
   }
 
   async send(subject, action, ...emailContent) {
