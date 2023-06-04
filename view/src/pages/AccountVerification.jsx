@@ -1,15 +1,16 @@
 import PinInput from 'react-pin-input';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import userContext from '../contexts/UserContext';
 import { useNavigate } from 'react-router';
 
 const AccountVerification = () => {
+  const userContxt = useContext(userContext);
   const navigateTo = useNavigate();
 
   const [verification_code] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
 
   const onComplete = (value) => {
-    console.log(value);
     fetch('/api/v1/users/verification', {
       method: 'POST',
       headers: {
@@ -20,7 +21,9 @@ const AccountVerification = () => {
       .then((res) => res.json())
       .then((results) => {
         if (results.status === 'success') {
-          setResponseMessage(results.message);
+          userContxt.setUserAfterVerification(results.user);
+
+          setResponseMessage('Account verified successfully!');
 
           setTimeout(() => {
             navigateTo('/');
@@ -54,6 +57,8 @@ const AccountVerification = () => {
         regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
       />
       {responseMessage !== '' && responseMessage}
+      <p>Did not get the code?</p>
+      <b>RESEND CODE</b>
     </div>
   );
 };
