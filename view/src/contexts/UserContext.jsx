@@ -65,17 +65,30 @@ export const UserContextProvider = ({ children }) => {
         },
         body: JSON.stringify(formData),
       });
-
-      //TODO: Get the JSON data from the response
-      const results = await res.json();
-      //TODO: Dispatch to the reducer to set the context state
-      dispatch({
-        type: 'SIGN_UP',
-        payload: results.message,
-      });
+      if (res.status === 201) {
+        //TODO: Get the JSON data from the response
+        const results = await res.json();
+        //TODO: Dispatch to the reducer to set the context state
+        dispatch({
+          type: 'SIGN_UP',
+          payload: results.message,
+        });
+      }
     } catch (err) {
       console.log(err);
     }
+  };
+
+  /**
+   * This function basically sets the users data in the context state
+   * right after verifying them
+   * @param {Object} user The user's data
+   */
+  const setUserAfterVerification = (user) => {
+    dispatch({
+      type: 'SET_USER_POST_VERIFICATION',
+      payload: user,
+    });
   };
 
   return (
@@ -85,6 +98,7 @@ export const UserContextProvider = ({ children }) => {
         signUpSuccessMessage: state.signUpSuccessMessage,
         loginUser,
         registerUser,
+        setUserAfterVerification,
       }}
     >
       {children}
