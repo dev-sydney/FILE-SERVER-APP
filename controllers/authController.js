@@ -343,11 +343,17 @@ exports.authenticateUser = catchAsyncError(async (req, res, next) => {
   }
 
   //EDGE-CASE: Check if the business account is not verified
-  if (
-    stillExistingUser.is_verified === 0 &&
-    stillExistingUser.privilege === 'business'
-  ) {
-    return next(new GlobalAppError('You account has not been verified', 401));
+  if (stillExistingUser.privilege === 'business') {
+    if (
+      stillExistingUser.is_verified === 0 &&
+      Date.now() > new Date(stillExistingUser.verification_expires_at)
+    )
+      return next(
+        new GlobalAppError(
+          'Account not verified on time, please click here to resend a verification code',
+          401
+        )
+      );
   }
   //TODO: attach the user data to the request body
   req.user = stillExistingUser;
@@ -396,9 +402,9 @@ exports.verifyAccount = catchAsyncError(async (req, res, next) => {
     .digest('hex');
 
   const [updateCommandResult] = await pool.query(
-    `UPDATE Users SET is_verified=?,verification_expires_at=?,verification_code=?
+    `UPDATE Users SET is_verified=?,verification_code=?
      WHERE user_id=? AND verification_code=? AND verification_expires_at>=?`,
-    [true, null, null, req.user.user_id, cryptedVerificationCode, currentDate]
+    [true, null, req.user.user_id, cryptedVerificationCode, currentDate]
   );
 
   if (updateCommandResult.affectedRows < 1) {
