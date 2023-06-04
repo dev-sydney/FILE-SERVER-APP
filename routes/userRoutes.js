@@ -12,14 +12,9 @@ router.route('/signup').post(authController.signupUser);
 router.route('/forgot-password').post(authController.forgotPassword);
 router.patch('/reset-password/:resetToken', authController.resetPassword);
 
-router.use(authController.authenticateUser);
+router.route('/verification').post(authController.verifyAccount);
 
-router
-  .route('/verification')
-  .post(
-    authController.restrictAccessTo('business'),
-    authController.verifyAccount
-  );
+router.use(authController.authenticateUser);
 
 router.route('/password-update').patch(authController.updateUserPassword);
 
