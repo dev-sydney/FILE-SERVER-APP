@@ -18,6 +18,14 @@ const userReducer = (state, action) => {
         signUpSuccessMessage: action.payload,
       };
 
+    case 'SET_USER_POST_VERIFICATION':
+      localStorage.removeItem('DDS_USER');
+      localStorage.setItem('DDS_USER', JSON.stringify(action.payload));
+      return {
+        ...state,
+        isLoggedIn: true,
+        user: action.payload,
+      };
     default:
       return state;
   }
