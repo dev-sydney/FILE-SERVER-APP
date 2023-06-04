@@ -132,14 +132,10 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
     .map((el) => '?')
     .join(','); //Returns '?,?,?'
 
+  //TODO: Create the user in the database
   const [insertCommandResults] = await pool.query(
     `INSERT INTO  Users(${columns}) VALUES(${questionMarkPlaceholders})`,
     [...Object.values(obj)]
-  );
-
-  const [queryResults] = await pool.query(
-    `SELECT * FROM Users WHERE user_id = ?`,
-    [insertCommandResults.insertId]
   );
 
   const verificationURL = `${req.protocol}://${req.get(
@@ -156,7 +152,9 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
       req.body.email_address
     ).sendAccountVerificationMail(verificationCode);
 
-    createSendAuthToken(queryResults[0], 201, req, res, true);
+    res.status(201).json({
+      message: "We've sent you a verification code, plase check your inbox",
+    });
   } catch (err) {
     //EDGE-CASE: If there was an issue that occurred when sending the mail
     await pool.query(`DELETE FROM Users WHERE user_id = ?`, [
@@ -168,7 +166,6 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
       new GlobalAppError('Error sending Email, please try again...', 500)
     );
   }
-  // createSendAuthToken(queryResults[0], 201, req, res);
 });
 
 /**
@@ -401,13 +398,21 @@ exports.verifyAccount = catchAsyncError(async (req, res, next) => {
     .update(req.body.verification_code)
     .digest('hex');
 
-  const [updateCommandResult] = await pool.query(
-    `UPDATE Users SET is_verified=?,verification_code=?
-     WHERE user_id=? AND verification_code=? AND verification_expires_at>=?`,
-    [true, null, req.user.user_id, cryptedVerificationCode, currentDate]
+  const [queryResults] = await pool.query(
+    'SELECT * FROM Users WHERE verification_code=? AND verification_expires_at>=?',
+    [cryptedVerificationCode, currentDate]
   );
+  const [user] = queryResults;
 
-  if (updateCommandResult.affectedRows < 1) {
+  if (user) {
+    await pool.query(
+      `UPDATE Users SET is_verified=?,verification_code=?
+       WHERE user_id=? AND verification_code=?`,
+      [true, null, user.user_id, cryptedVerificationCode]
+    );
+
+    createSendAuthToken(user, 200, req, res);
+  } else {
     return next(
       new GlobalAppError(
         'Incorrect code or account verification time window passed.',
@@ -415,11 +420,6 @@ exports.verifyAccount = catchAsyncError(async (req, res, next) => {
       )
     );
   }
-
-  res.status(200).json({
-    status: 'success',
-    message: 'Account verified successfully.',
-  });
 });
 
 /**
