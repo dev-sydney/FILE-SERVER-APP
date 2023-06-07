@@ -5,6 +5,14 @@ const userController = require('./../controllers/userController');
 
 const router = express.Router();
 
+router
+  .route('/')
+  .get(
+    authController.authenticateUser,
+    authController.restrictAccessTo('admin'),
+    userController.getAllUsers
+  );
+
 router.route('/login').post(authController.loginUser);
 
 router.route('/signup').post(authController.signupUser);
