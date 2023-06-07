@@ -3,6 +3,8 @@ const sharp = require('sharp');
 
 const catchAsyncError = require('./../utils/catchAsyncError');
 const GlobalAppError = require('./../utils/GlobalAppError');
+const APIFeatures = require('../utils/APIFeatures');
+
 const pool = require('./../model/database');
 
 const multerStorage = multer.memoryStorage();
@@ -76,4 +78,24 @@ exports.updateAccount = catchAsyncError(async (req, res, next) => {
       new GlobalAppError('Could not update account, please try again', 400)
     );
   }
+});
+
+/**
+ * Fetches all the business acccounts that are verified
+ */
+exports.getAllUsers = catchAsyncError(async (req, res, next) => {
+  const features = new APIFeatures(req.query, 'Users')
+    .filter()
+    .sort()
+    .fieldLimit();
+
+  const sqlQuery = features.getSQLQueryString();
+  const fieldValues = features.values;
+
+  const [queryResults] = await pool.query(sqlQuery, fieldValues);
+
+  res.status(200).json({
+    status: 'success',
+    users: queryResults,
+  });
 });

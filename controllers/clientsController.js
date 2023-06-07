@@ -1,5 +1,6 @@
 const catchAsyncError = require('../utils/catchAsyncError');
 const GlobalAppError = require('./../utils/GlobalAppError');
+const APIFeatures = require('../utils/APIFeatures');
 
 const pool = require('./../model/database');
 /**
@@ -37,13 +38,21 @@ exports.addClientContact = catchAsyncError(async (req, res, next) => {
  * clients of a business
  */
 exports.getAllClientsContacts = catchAsyncError(async (req, res, next) => {
-  const [queryResults] = await pool.query(
-    `SELECT * FROM Clients WHERE user_id = ? AND client_status = 1`,
-    [req.user.user_id]
-  );
+  req.query.user_id = req.user.user_id;
+
+  const features = new APIFeatures(req.query, 'Clients')
+    .filter()
+    .sort()
+    .fieldLimit();
+
+  let queryString = features.getSQLQueryString();
+  let fieldValues = features.values;
+
+  const [clientsContacts] = await pool.query(queryString, fieldValues);
 
   res.status(200).json({
-    clientContacts: queryResults,
+    status: 'success',
+    clientsContacts,
   });
 });
 

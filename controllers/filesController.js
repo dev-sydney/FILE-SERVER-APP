@@ -2,6 +2,7 @@ const multer = require('multer');
 
 const catchAsyncError = require('./../utils/catchAsyncError');
 const GlobalAppError = require('./../utils/GlobalAppError');
+const APIFeatures = require('../utils/APIFeatures');
 
 const pool = require('./../model/database');
 
@@ -58,60 +59,32 @@ exports.addNewFile = catchAsyncError(async (req, res, next) => {
 });
 
 /**
- * This middleware function checks if theres a query paramter for the title and file_description
+ * Middle-ware function for getting meta-data about the files belonging to the logged in user
  */
-exports.checkTitleDescriptionParameters = (req, res, next) => {
-  let queryStr;
 
-  //EDGE-CASE: if theres query parameter for the file_description or the title
-  if (req.query.title || req.query.file_description) {
-    queryStr = 'SELECT * FROM Files WHERE user_id = ? AND ';
+exports.getFiles = catchAsyncError(async (req, res, next) => {
+  req.query.user_id = req.user.user_id;
 
-    //EDGE-CASE: if parameter contains only one of the two fields
-    if (Object.keys(req.query).length === 1) {
-      Object.keys(req.query).forEach((curField) => {
-        queryStr = queryStr.concat(
-          `${curField} LIKE '%${req.query[curField]}%'`
-        );
-      });
-    }
+  let features = new APIFeatures(req.query, 'Files')
+    .filter()
+    .sort()
+    .fieldLimit();
 
-    //EDGE-CASE: if the paramter includes both fields
-    if (Object.keys(req.query).length > 1) {
-      Object.keys(req.query).forEach((curField) => {
-        queryStr = queryStr.concat(
-          `${curField} LIKE '%${req.query[curField]}%' OR `
-        );
-      });
+  let queryString = features.getSQLQueryString();
+  let fieldValues = features.values;
 
-      queryStr = queryStr.slice(0, -3); //NOTE: This removes the last 3 characters in the query string - 'OR '
-    }
-  }
-
-  req.queryString = queryStr;
-  next();
-};
-
-/**
- * Middle-ware function for reading file meta data from the database for the feed page
- */
-exports.getFilesForFeedPage = catchAsyncError(async (req, res, next) => {
-  let queryStr = req.queryString
-    ? req.queryString
-    : `SELECT * FROM Files WHERE user_id = ? AND file_status = 1 ORDER BY created_at DESC`;
-
-  //TODO: Perform the query as a business account
-  const [queryResults] = await pool.query(queryStr, [req.user.user_id]);
+  const [files] = await pool.query(queryString, fieldValues);
 
   res.status(200).json({
-    userFiles: queryResults,
+    status: 'success',
+    files,
   });
 });
 
 /**
  * Middle-ware function for reading meta data about documents that belong to a specific business
  */
-exports.getFiles = catchAsyncError(async (req, res, next) => {
+exports.getBusinessFiles = catchAsyncError(async (req, res, next) => {
   //EDGE-CASE: if theres no user_id on the request parameter
   if (!req.params.user_id)
     return next(
@@ -132,6 +105,7 @@ exports.getFiles = catchAsyncError(async (req, res, next) => {
   );
 
   res.status(200).json({
+    status: 'success',
     businessFiles: queryResults,
   });
 });
