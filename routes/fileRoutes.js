@@ -36,4 +36,8 @@ router
     fileShareController.shareFilesToEmails
   );
 
+router
+  .route('/overview')
+  .get(authController.restrictAccessTo('admin'), filesController.getOverview);
+
 module.exports = router;

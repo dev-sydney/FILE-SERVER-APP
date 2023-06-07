@@ -170,3 +170,16 @@ exports.deleteDocument = catchAsyncError(async (req, res, next) => {
     });
   }
 });
+
+exports.getOverview = catchAsyncError(async (req, res, next) => {
+  const [overview] = await pool.query(`SELECT
+  (SELECT COUNT(user_id) FROM Users WHERE privilege ='business') AS no_business,
+  (SELECT COUNT(_id) FROM FileShareToClients) AS no_file_shares,
+  (SELECT COUNT(file_id) FROM Files) AS no_files,
+  (SELECT COUNT(client_id) FROM Clients) AS no_clients`);
+
+  res.status(200).json({
+    status: 'success',
+    overview,
+  });
+});
