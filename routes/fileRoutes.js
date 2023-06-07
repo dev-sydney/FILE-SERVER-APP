@@ -14,11 +14,7 @@ router
     filesController.uploadFile,
     filesController.addNewFile
   )
-  .get(
-    authController.restrictAccessTo('business'),
-    filesController.checkTitleDescriptionParameters,
-    filesController.getFilesForFeedPage
-  );
+  .get(authController.restrictAccessTo('business'), filesController.getFiles);
 
 router
   .route('/:file_id')
@@ -27,7 +23,10 @@ router
 
 router
   .route('/businesses/:user_id')
-  .get(authController.restrictAccessTo('admin'), filesController.getFiles);
+  .get(
+    authController.restrictAccessTo('admin'),
+    filesController.getBusinessFiles
+  );
 
 router
   .route('/share')
