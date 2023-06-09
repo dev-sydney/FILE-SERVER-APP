@@ -1,0 +1,11 @@
+.overview_item__container {
+  display: flex;
+  outline: 1px solid black;
+
+  .overview_item {
+    outline: 1px solid blue;
+    height: 3em;
+    width: 5em;
+    border-radius: 10px;
+  }
+}
