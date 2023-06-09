@@ -1,0 +1,26 @@
+.users_table_component {
+  outline: 1px solid lightcoral;
+  border-radius: 10px;
+  #usersTable {
+    thead tr {
+      border-bottom: 1px solid gray;
+    }
+    thead tr th {
+      color: rgb(81, 80, 80);
+      padding-bottom: 10px;
+    }
+    tbody tr {
+      // border-bottom: 1px solid darkgray;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      height: 3em;
+    }
+    tbody tr td {
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+    .user_td {
+      display: flex;
+    }
+  }
+}
