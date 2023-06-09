@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   UilScenery,
   UilFileAlt,
@@ -8,7 +9,26 @@ import {
 } from '@iconscout/react-unicons';
 import PropTypes from 'prop-types';
 
-const DocsMetaDataTable = ({ companyDocuments }) => {
+const DocsMetaDataTable = ({ user_id }) => {
+  const [userFilesData, setUserFilesData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    fetch(`/api/v1/files/businesses/${user_id}`)
+      .then((res) => res.json())
+      .then((results) => {
+        if (results.status === 'success') {
+          setUserFilesData(results.businessFiles);
+        } else {
+          throw new Error(results.message);
+        }
+      })
+      .catch((err) => {
+        setErrorMessage(err.message);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const getDocumentIcon = (fileType = String) => {
     switch (fileType) {
       //NOTE:Some Image formats
@@ -39,6 +59,7 @@ const DocsMetaDataTable = ({ companyDocuments }) => {
   };
   return (
     <div>
+      {errorMessage && errorMessage}
       <table>
         <thead>
           <tr>
@@ -49,17 +70,19 @@ const DocsMetaDataTable = ({ companyDocuments }) => {
           </tr>
         </thead>
         <tbody>
-          {companyDocuments.length > 0 &&
-            companyDocuments.map((docData, i) => (
+          {userFilesData &&
+            userFilesData.map((fileData, i) => (
               <tr key={i}>
                 <td>
-                  {getDocumentIcon(docData.file_type.toLowerCase())}
+                  {getDocumentIcon(fileData.file_type.toLowerCase())}
 
-                  {docData.title}
+                  {fileData.title}
                 </td>
-                <td>{new Date(docData.created_at).toDateString()}</td>
-                <td>{docData.no_shares}</td>
-                <td>{docData.no_downloads ? docData.no_downloads : 'none'}</td>
+                <td>{new Date(fileData.created_at).toDateString()}</td>
+                <td>{fileData.no_shares}</td>
+                <td>
+                  {fileData.no_downloads ? fileData.no_downloads : 'none'}
+                </td>
               </tr>
             ))}
         </tbody>
@@ -68,6 +91,6 @@ const DocsMetaDataTable = ({ companyDocuments }) => {
   );
 };
 DocsMetaDataTable.propTypes = {
-  companyDocuments: PropTypes.array,
+  user_id: PropTypes.string,
 };
 export default DocsMetaDataTable;
