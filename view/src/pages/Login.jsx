@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
 import userContext from './../contexts/UserContext';
+import { useNavigate } from 'react-router';
 
 /**
  * The login page
@@ -7,7 +8,7 @@ import userContext from './../contexts/UserContext';
  */
 const Login = () => {
   const userContxt = useContext(userContext);
-
+  const navigateTo = useNavigate();
   const [formData, setFormData] = useState({});
 
   const onChange = (e) => {
@@ -19,7 +20,7 @@ const Login = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          userContxt.loginUser(formData);
+          userContxt.loginUser(formData, navigateTo);
         }}
       >
         <div className="form_group">
