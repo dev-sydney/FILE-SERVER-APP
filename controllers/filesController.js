@@ -49,7 +49,8 @@ exports.addNewFile = catchAsyncError(async (req, res, next) => {
 
   if (insertCommandResults.insertId) {
     res.status(201).json({
-      resMessage: 'File added successfully',
+      status: 'success',
+      message: 'File added successfully',
     });
   } else {
     return next(

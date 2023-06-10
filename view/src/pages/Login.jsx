@@ -25,7 +25,7 @@ const Login = () => {
       >
         <div className="form_group">
           <label htmlFor="">Email address:</label>
-          <input type="text" name="emailAddress" onChange={onChange} />
+          <input type="email" name="emailAddress" onChange={onChange} />
         </div>
         <div className="form_group">
           <label htmlFor="">Password:</label>
