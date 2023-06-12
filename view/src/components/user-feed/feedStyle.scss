@@ -1,0 +1,31 @@
+.feed_item {
+  outline: 1px solid black;
+  border-radius: 10px;
+  height: 13em;
+  width: 25em;
+  padding: 0.7em;
+  display: flex;
+  .feed_thumbnail {
+    border-radius: 10px;
+  }
+
+  .file_details {
+    text-align: left;
+    outline: 1px solid red;
+    overflow: hidden;
+    margin-left: auto;
+    .file_description {
+      overflow-wrap: break-word;
+      //   inline-size: 10em;
+      overflow-y: auto;
+      max-height: calc(100% - 3em);
+    }
+  }
+  .feed_thumbnail,
+  .file_details {
+    min-width: 50%;
+    max-width: 50%;
+    max-height: 100%;
+    min-height: 100%;
+  }
+}
