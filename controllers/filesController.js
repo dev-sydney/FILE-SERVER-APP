@@ -31,7 +31,7 @@ exports.addNewFile = catchAsyncError(async (req, res, next) => {
   const obj = { ...req.body };
 
   //NOTE: Adding the neccesary fields
-  obj.file_type = req.file.mimetype.split('/')[1];
+  obj.file_type = req.file.mimetype;
   obj.user_id = +obj.user_id;
   obj.file_name = req.file.filename;
 
@@ -96,12 +96,12 @@ exports.getBusinessFiles = catchAsyncError(async (req, res, next) => {
     );
 
   const [queryResults] = await pool.query(
-    `SELECT COUNT(FileShareToClients._id) AS no_shares,
-  title, file_description, file_type, file_name, created_at
-  FROM FileShareToClients
-  RIGHT JOIN Files ON FileShareToClients.file_id = Files.file_id
-  WHERE Files.user_id = ?
-  GROUP BY FileShareToClients.file_id`,
+    `SELECT COUNT(FileShareToClients.file_id) AS times_shared,
+    title, file_description, file_type, file_name, created_at
+    FROM Files
+    LEFT JOIN FileShareToClients ON Files.file_id = FileShareToClients.file_id
+    WHERE Files.user_id = ?
+    GROUP BY Files.file_id`,
     [+req.params.user_id]
   );
 
@@ -183,4 +183,30 @@ exports.getOverview = catchAsyncError(async (req, res, next) => {
     status: 'success',
     overview,
   });
+});
+
+exports.createFileDownload = catchAsyncError(async (req, res, next) => {
+  if (!req.params.file_id)
+    return next(
+      new GlobalAppError(
+        'No file was selected, please select one & try again',
+        400
+      )
+    );
+
+  const [insertCommandResults] = await pool.query(
+    `INSERT INTO FileDownloads(file_id,user_id) VALUES (?,?)`,
+    [+req.params.file_id, req.user.user_id]
+  );
+
+  if (insertCommandResults.insertId) {
+    res.status(201).json({
+      status: 'success',
+      message: 'File downloaded successfully',
+    });
+  } else {
+    return next(
+      new GlobalAppError('Trouble downloading the file, please try again.', 400)
+    );
+  }
 });
