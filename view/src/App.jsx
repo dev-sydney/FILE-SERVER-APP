@@ -11,6 +11,7 @@ import Admin from './pages/Admin';
 import UploadPage from './pages/UploadPage';
 import Signup from './pages/Signup';
 import AccountVerification from './pages/AccountVerification';
+import UserFIlesPage from './pages/UserFIlesPage';
 
 import './App.css';
 
@@ -29,6 +30,7 @@ function App() {
             <Route path="/" element={<UserFeed />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/upload" element={<UploadPage />} />
+            <Route path="/users/:user_id" element={<UserFIlesPage />} />
           </Routes>
         </BrowserRouter>
       </UserContextProvider>

@@ -1,15 +1,8 @@
 import { useEffect, useState } from 'react';
-import {
-  UilScenery,
-  UilFileAlt,
-  UilFilm,
-  UilAlignJustify,
-  UilFileQuestionAlt,
-  //  UilDocumentInfo
-} from '@iconscout/react-unicons';
 import PropTypes from 'prop-types';
+import getFileIcon from '../../../utils/getFileIcon';
 
-const DocsMetaDataTable = ({ user_id }) => {
+const DocsMetaDataTable = ({ user_id, isModalActive }) => {
   const [userFilesData, setUserFilesData] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -27,36 +20,8 @@ const DocsMetaDataTable = ({ user_id }) => {
         setErrorMessage(err.message);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isModalActive]);
 
-  const getDocumentIcon = (fileType = String) => {
-    switch (fileType) {
-      //NOTE:Some Image formats
-      case 'jpeg':
-        return <UilScenery size="2em" color="#5575EA" />;
-      case 'png':
-        return <UilScenery size="2em" color="#5575EA" />;
-      case 'jpg':
-        return <UilScenery size="2em" color="#5575EA" />;
-      case 'gif':
-        return <UilScenery size="2em" color="#5575EA" />;
-      case 'bmp':
-        return <UilScenery size="2em" color="#5575EA" />;
-      //NOTE: Some video formats
-      case 'mp4':
-        return <UilFilm size="2em" color="#5575EA" />;
-      case 'avi':
-        return <UilFilm size="2em" color="#5575EA" />;
-      case 'mkv':
-        return <UilFilm size="2em" color="#5575EA" />;
-      case 'pdf':
-        return <UilFileAlt size="2em" color="#5575EA" />;
-      case 'txt':
-        return <UilAlignJustify size="2em" color="#5575EA" />;
-      default:
-        return <UilFileQuestionAlt size="2em" color="#5575EA" />;
-    }
-  };
   return (
     <div>
       {errorMessage && errorMessage}
@@ -74,12 +39,12 @@ const DocsMetaDataTable = ({ user_id }) => {
             userFilesData.map((fileData, i) => (
               <tr key={i}>
                 <td>
-                  {getDocumentIcon(fileData.file_type.toLowerCase())}
+                  {getFileIcon(fileData)}
 
                   {fileData.title}
                 </td>
                 <td>{new Date(fileData.created_at).toDateString()}</td>
-                <td>{fileData.no_shares}</td>
+                <td>{fileData.times_shared}</td>
                 <td>
                   {fileData.no_downloads ? fileData.no_downloads : 'none'}
                 </td>
@@ -92,5 +57,6 @@ const DocsMetaDataTable = ({ user_id }) => {
 };
 DocsMetaDataTable.propTypes = {
   user_id: PropTypes.string,
+  isModalActive: PropTypes.bool,
 };
 export default DocsMetaDataTable;

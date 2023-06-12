@@ -26,7 +26,9 @@ const UserFIlesPage = () => {
       >
         Upoad
       </button>
-      {user_id && <DocsMetaDataTable user_id={user_id} />}
+      {user_id && (
+        <DocsMetaDataTable user_id={user_id} isModalActive={isModalActive} />
+      )}
     </div>
   );
 };
