@@ -20,7 +20,7 @@ module.exports = class APIFeatures {
   filter() {
     let obj = { ...this.queryString };
     //TODO: Define the unwanted fields and remove them from the req.query Object
-    const excludedFields = ['sort', 'limit', 'page', 'fields', 'asc'];
+    const excludedFields = ['sort', 'limit', 'page', 'fields', 'searchField'];
     excludedFields.forEach((el) => delete obj[el]);
 
     //TODO: Removing fields that don't have comparison operators as keys
@@ -98,6 +98,18 @@ module.exports = class APIFeatures {
       let selectedFields = this.queryString.fields;
       this.SQLSelectClause = `SELECT ${selectedFields} FROM `;
     }
+    return this;
+  }
+  /**
+   *
+   * @param {String} searchVal The search string
+   * @returns
+   */
+  search(searchVal) {
+    this.SQLWhereClause += `${this.queryString.user_id ? ' AND' : ''} ${
+      this.queryString.searchField
+    } LIKE '%${searchVal}%'`;
+
     return this;
   }
 

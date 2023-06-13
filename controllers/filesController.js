@@ -210,3 +210,25 @@ exports.createFileDownload = catchAsyncError(async (req, res, next) => {
     );
   }
 });
+/**
+ * Middleware function to handle requests to search for a file
+ */
+exports.searchFiles = catchAsyncError(async (req, res, next) => {
+  //If a business account is making the requests, then, they should be only able to search for files belonging to them
+  if (req.user.privilege === 'business') req.query.user_id = req.user.user_id;
+
+  const features = new APIFeatures(req.query, 'Files')
+    .filter()
+    .fieldLimit()
+    .search(req.body.searchVal);
+
+  let queryString = features.getSQLQueryString();
+  let fieldValues = features.values;
+
+  const [searchResults] = await pool.query(queryString, fieldValues);
+
+  res.status(200).json({
+    status: 'success',
+    searchResults,
+  });
+});

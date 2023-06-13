@@ -40,4 +40,11 @@ router
   .route('/overview')
   .get(authController.restrictAccessTo('admin'), filesController.getOverview);
 
+router
+  .route('/search')
+  .post(
+    authController.restrictAccessTo('business', 'admin'),
+    filesController.searchFiles
+  );
+
 module.exports = router;
