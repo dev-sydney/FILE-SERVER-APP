@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { UilShare } from '@iconscout/react-unicons';
-import getFileThumbNail from '../../../utils/getFileThumbNail';
 import PropTypes from 'prop-types';
+import FeedItem from './FeedItem';
 
 import './feedStyle.scss';
 
-const FeedItems = ({ isModalActive, setIsModalActive }) => {
+const FeedItemsContainer = ({ isModalActive, setIsModalActive }) => {
   const [userFiles, setUserFiles] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -29,25 +28,20 @@ const FeedItems = ({ isModalActive, setIsModalActive }) => {
       {errorMessage && errorMessage}
       {userFiles &&
         userFiles.map((file) => (
-          <div className="feed_item" key={file.file_id}>
-            {getFileThumbNail(file, setIsModalActive, isModalActive)}
-            <div className="file_details">
-              <div style={{ textAlign: 'right' }}>
-                <UilShare size="1.2em" color="#5575EA" />
-              </div>
-              <h2>{file.title}</h2>
-              <button>Download</button>
-              <p className="file_description">{file.file_description}</p>
-            </div>
-          </div>
+          <FeedItem
+            file={file}
+            key={file.file_id}
+            isModalActive={isModalActive}
+            setIsModalActive={setIsModalActive}
+          />
         ))}
     </div>
   );
 };
 
-FeedItems.propTypes = {
+FeedItemsContainer.propTypes = {
   isModalActive: PropTypes.bool,
   setIsModalActive: PropTypes.func,
 };
 
-export default FeedItems;
+export default FeedItemsContainer;

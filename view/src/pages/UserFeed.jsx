@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import FeedItems from '../components/user-feed/FeedItems';
+import FeedItemsContainer from '../components/user-feed/FeedItemsContainer';
 import ModalBackground from './../components/modal/ModalBackground';
 import Video from '../components/video/Video';
 
@@ -14,7 +14,7 @@ const UserFeed = () => {
         />
       )}
       <h2>For you</h2>
-      <FeedItems
+      <FeedItemsContainer
         isModalActive={isModalActive}
         setIsModalActive={setIsModalActive}
       />
