@@ -123,6 +123,7 @@ exports.shareFilesToEmails = catchAsyncError(async (req, res, next) => {
     console.log(insertCommandResults.info);
 
     res.status(200).json({
+      status: 'success',
       message: 'Documents shared successfully',
     });
   } catch (err) {

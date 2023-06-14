@@ -4,7 +4,18 @@ import FeedItem from './FeedItem';
 
 import './feedStyle.scss';
 
-const FeedItemsContainer = ({ isModalActive, setIsModalActive }) => {
+/**
+ * Fetches the data about the user files and passes it down to the FeedItems component
+ * @param {*} param0
+ * @returns
+ */
+const FeedItemsContainer = ({
+  setIsModalActive,
+  setFileNames,
+  fileNames,
+  setIsCheckBoxActive,
+  isCheckBoxActive,
+}) => {
   const [userFiles, setUserFiles] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -25,14 +36,36 @@ const FeedItemsContainer = ({ isModalActive, setIsModalActive }) => {
 
   return (
     <div>
+      {fileNames.length > 0 && (
+        <span>
+          <button
+            onClick={() => {
+              setIsModalActive(true);
+            }}
+          >
+            Share
+          </button>
+          <button
+            onClick={() => {
+              setFileNames([]);
+              setIsCheckBoxActive(false);
+            }}
+          >
+            Cancel
+          </button>
+        </span>
+      )}
+
       {errorMessage && errorMessage}
       {userFiles &&
         userFiles.map((file) => (
           <FeedItem
+            setFileNames={setFileNames}
             file={file}
             key={file.file_id}
-            isModalActive={isModalActive}
-            setIsModalActive={setIsModalActive}
+            setIsCheckBoxActive={setIsCheckBoxActive}
+            isCheckBoxActive={isCheckBoxActive}
+            fileNames={fileNames}
           />
         ))}
     </div>
@@ -40,8 +73,11 @@ const FeedItemsContainer = ({ isModalActive, setIsModalActive }) => {
 };
 
 FeedItemsContainer.propTypes = {
-  isModalActive: PropTypes.bool,
+  fileNames: PropTypes.any,
+  isCheckBoxActive: PropTypes.bool,
+  setIsCheckBoxActive: PropTypes.func,
   setIsModalActive: PropTypes.func,
+  setFileNames: PropTypes.func,
 };
 
 export default FeedItemsContainer;

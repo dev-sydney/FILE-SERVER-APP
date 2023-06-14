@@ -106,7 +106,7 @@ module.exports = class Email {
    * @param {String} caption A breif description of the files being shared
    * @param {Array} attachments File attachments
    */
-  async sendFileToClients(subject, caption, attachments) {
+  async sendFileToClients(subject, caption = '', attachments) {
     const html = fileShareTemplate(caption);
 
     const emailOptions = {
