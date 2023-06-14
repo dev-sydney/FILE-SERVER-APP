@@ -1,0 +1,19 @@
+.client_modal_window {
+  max-height: 100%;
+  min-height: 100%;
+  outline: 2px solid red;
+  .form_group {
+    text-align: left;
+  }
+  // width: 10em;
+}
+.client_item {
+  display: flex;
+  outline: 1px solid black;
+  .client_details {
+    text-align: left;
+  }
+}
+label {
+  display: block;
+}

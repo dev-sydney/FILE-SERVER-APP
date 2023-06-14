@@ -1,3 +1,9 @@
+/**
+ * Handles the logic to render out either a small preview of a file(for only images) or
+ * some other placeholder image for pdf,video & audo files
+ * @param {Object} file The File data
+ * @returns
+ */
 const getFileThumbNail = (file) => {
   switch (file.file_type.split('/')[0]) {
     case 'image':
