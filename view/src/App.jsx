@@ -13,6 +13,7 @@ import Signup from './pages/Signup';
 import AccountVerification from './pages/AccountVerification';
 import UserFIlesPage from './pages/UserFIlesPage';
 import Explore from './pages/Explore';
+import ClientsPage from './pages/ClientsPage';
 
 import './App.css';
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/admin/upload" element={<UploadPage />} />
+            <Route path="/user-clients" element={<ClientsPage />} />
             <Route path="/users/:user_id" element={<UserFIlesPage />} />
           </Routes>
         </BrowserRouter>

@@ -24,7 +24,8 @@ exports.addClientContact = catchAsyncError(async (req, res, next) => {
 
   if (insertCommandResults.insertId) {
     res.status(201).json({
-      resMessage: 'Client added successfully',
+      status: 'success',
+      message: 'Client added successfully',
     });
   } else {
     return next(
@@ -99,7 +100,7 @@ exports.updateClientContact = catchAsyncError(async (req, res, next) => {
  */
 exports.deleteClientContact = catchAsyncError(async (req, res, next) => {
   //EDGE-CASE: If the client_id is absent from the req.params or is an empty string
-  if (!req.params.client_id || req.params.client_id === '')
+  if (!req.query.clientIds || req.query.clientIds === '')
     return next(
       new GlobalAppError(
         'No contact was selected,please select one and try again',
@@ -107,13 +108,17 @@ exports.deleteClientContact = catchAsyncError(async (req, res, next) => {
       )
     );
 
+  const clientIds = req.query.clientIds.split(',').map((el) => +el);
+  const questionMarkPlaceholders = clientIds.map((el) => '?').join(',');
+
   const [updateCommandResult] = await pool.query(
-    `UPDATE Clients SET client_status = false WHERE client_id = ?`,
-    [+req.params.client_id]
+    `UPDATE Clients SET client_status = false WHERE client_id IN (${questionMarkPlaceholders})`,
+    clientIds
   );
 
   if (updateCommandResult.affectedRows > 0) {
     res.status(204).json({
+      status: 'success',
       message: 'Contact deleted successfully',
     });
   } else {
