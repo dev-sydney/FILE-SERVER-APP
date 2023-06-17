@@ -5,6 +5,8 @@ const userController = require('./../controllers/userController');
 
 const router = express.Router();
 
+router.route('/logout').get(authController.logoutUser);
+
 router
   .route('/')
   .get(
@@ -13,6 +15,13 @@ router
     userController.getAllUsers
   );
 
+router
+  .route('/:user_id')
+  .get(
+    authController.authenticateUser,
+    authController.restrictAccessTo('admin', 'business'),
+    userController.getUser
+  );
 router.route('/login').post(authController.loginUser);
 
 router.route('/signup').post(authController.signupUser);
@@ -33,7 +42,5 @@ router
     userController.resizeAccountPhoto,
     userController.updateAccount
   );
-
-router.get('/logout', authController.logoutUser);
 
 module.exports = router;

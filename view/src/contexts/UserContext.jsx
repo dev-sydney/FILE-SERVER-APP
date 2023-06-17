@@ -10,9 +10,18 @@ export const UserContextProvider = ({ children }) => {
     user: JSON.parse(localStorage.getItem('DDS_USER')),
     isLoggedIn: false,
     signUpSuccessMessage: null,
+    userALert: null,
   };
 
   const [state, dispatch] = useReducer(userReducer, intialState);
+
+  const clearContextAlerts = (secs = 3000) => {
+    setTimeout(() => {
+      dispatch({
+        type: 'CLEAR_USER_ALERT',
+      });
+    }, secs);
+  };
 
   /**
    * Function for making request to the API to log the user into the application
@@ -32,21 +41,22 @@ export const UserContextProvider = ({ children }) => {
 
       //TODO: Get the JSON data from the response
       const results = await res.json();
+      if (res.status === 200) {
+        //TODO: Dispatch to the reducer to set the context state
+        dispatch({
+          type: 'SIGN_IN_USER',
+          payload: results.user,
+        });
 
-      //TODO: Dispatch to the reducer to set the context state
-      dispatch({
-        type: 'SIGN_IN_USER',
-        payload: results.user,
-      });
-
-      //TODO: Navigate the user to the appropriate page
-      setTimeout(() => {
-        if (results.user.privilege === 'admin') {
-          navigateTo('/admin');
-        } else {
-          navigateTo('/');
-        }
-      }, 1000);
+        //TODO: Navigate the user to the appropriate page
+        setTimeout(() => {
+          if (results.user.privilege === 'admin') {
+            navigateTo('/admin');
+          } else {
+            navigateTo('/');
+          }
+        }, 1000);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -91,13 +101,38 @@ export const UserContextProvider = ({ children }) => {
     });
   };
 
+  const logout = async (navigateTo) => {
+    try {
+      const res = await fetch('/api/v1/users/logout');
+
+      if (res.status === 200) {
+        dispatch({
+          type: 'LOGOUT',
+        });
+
+        setTimeout(() => {
+          navigateTo('/login', { replace: true });
+        }, 500);
+        state.user = null;
+      }
+    } catch (err) {
+      dispatch({
+        type: 'SIGN_OUT_ERROR',
+        payload: 'Trouble signing out right now, please try again.',
+      });
+      clearContextAlerts();
+    }
+  };
+
   return (
     <userContext.Provider
       value={{
         user: state.user,
         signUpSuccessMessage: state.signUpSuccessMessage,
+        userALert: state.userALert,
         loginUser,
         registerUser,
+        logout,
         setUserAfterVerification,
       }}
     >
