@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import FeedItem from './FeedItem';
 
 import './feedStyle.scss';
+import alertContext from '../../contexts/AlertContext';
 
 /**
  * Fetches the data about the user files and passes it down to the FeedItems component
@@ -16,8 +17,9 @@ const FeedItemsContainer = ({
   setIsCheckBoxActive,
   isCheckBoxActive,
 }) => {
+  const alertContxt = useContext(alertContext);
+
   const [userFiles, setUserFiles] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     fetch(
@@ -31,7 +33,11 @@ const FeedItemsContainer = ({
           throw new Error(results.message);
         }
       })
-      .catch((err) => setErrorMessage(err.message));
+      .catch((err) =>
+        alertContxt.setAlert(err.message, 'Oops, something went wrong')
+      );
+
+    //eslint-disable-next-line
   }, []);
 
   return (
@@ -56,7 +62,6 @@ const FeedItemsContainer = ({
         </span>
       )}
 
-      {errorMessage && errorMessage}
       {userFiles &&
         userFiles.map((file) => (
           <FeedItem

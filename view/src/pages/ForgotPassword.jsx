@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import alertContext from '../contexts/AlertContext';
 
 const ForgotPassword = () => {
+  const alertContxt = useContext(alertContext);
+
   const [emailAddress, setEmailAddress] = useState('');
-  const [alertMessage, setAlertMessage] = useState(null);
   const handleFormInputChange = (e) => {
     setEmailAddress(e.target.value);
   };
@@ -16,16 +18,18 @@ const ForgotPassword = () => {
       .then((res) => res.json())
       .then((results) => {
         if (results.status === 'success') {
-          setAlertMessage(results.message);
+          alertContxt.setAlert(results.message, 'Well done!');
         } else {
           throw new Error(results.message);
         }
       })
-      .catch((err) => setAlertMessage(err.message));
+      .catch((err) =>
+        alertContxt.setAlert(err.message, 'Uh oh, something went wrong!')
+      );
   };
+
   return (
     <div className="forgotpassword-container">
-      {alertMessage && <b>{alertMessage}</b>}
       <form className="auth__form" onSubmit={handleFormSubmit}>
         <div className="form__group">
           <input

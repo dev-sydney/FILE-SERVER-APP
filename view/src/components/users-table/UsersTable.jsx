@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 import './usersTableStyle.scss';
+import alertContext from '../../contexts/AlertContext';
 
 const UsersTable = () => {
   const [users, setUsers] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const alertContxt = useContext(alertContext);
 
   useEffect(() => {
     fetch(
@@ -21,13 +22,14 @@ const UsersTable = () => {
         }
       })
       .catch((err) => {
-        setErrorMessage(err.message);
+        alertContxt.setAlert(err.message, 'Error');
       });
+
+    //eslint-disable-next-line
   }, []);
 
   return (
     <div className="users_table_component">
-      {errorMessage && errorMessage}
       <table id="usersTable">
         <thead>
           <tr>

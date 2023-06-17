@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import AddClientForm from '../components/clients/AddClientForm';
 import Modalbackground from '../components/modal/ModalBackground';
 // import PropTypes from 'prop-types'
 import './../components/clients/clientStyle.scss';
+import alertContext from '../contexts/AlertContext';
 
 const ClientsPage = () => {
+  const alertContxt = useContext(alertContext);
+
   const [clientContacts, setClientContacts] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
   const [isFormModalActive, setIsFormModalActive] = useState(false);
   const [checked, setChecked] = useState([]);
 
@@ -22,7 +24,9 @@ const ClientsPage = () => {
           throw new Error(results.message);
         }
       })
-      .catch((err) => setErrorMessage(err.message));
+      .catch((err) =>
+        alertContxt.setAlert(err.message, 'Something went wrong!')
+      );
   }, [isFormModalActive]);
 
   /**
@@ -64,7 +68,7 @@ const ClientsPage = () => {
           }
         />
       )}
-      {errorMessage && errorMessage}
+
       <h2>Your clients</h2>
 
       <button
@@ -86,14 +90,14 @@ const ClientsPage = () => {
                     (el) => !checked.includes(el.client_id.toString())
                   )
                 );
-                setErrorMessage('Contact deleted successfully');
+                alertContxt.setAlert('Contact deleted successfully', 'Awesome');
               } else {
                 throw new Error(
                   'Trouble deleting the contact, please try again'
                 );
               }
             })
-            .catch((err) => setErrorMessage(err.message));
+            .catch((err) => alertContxt.setAlert(err.message, 'Uh oh!'));
         }}
       >
         Delete Contacts

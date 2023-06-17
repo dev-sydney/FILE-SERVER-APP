@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import getFileIcon from '../../../utils/getFileIcon';
+import alertContext from '../../contexts/AlertContext';
 
 const DocsMetaDataTable = ({ user_id, isModalActive }) => {
+  const alertContxt = useContext(alertContext);
+
   const [userFilesData, setUserFilesData] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     fetch(`/api/v1/files/businesses/${user_id}`)
@@ -17,14 +19,13 @@ const DocsMetaDataTable = ({ user_id, isModalActive }) => {
         }
       })
       .catch((err) => {
-        setErrorMessage(err.message);
+        alertContxt.setAlert(err.message, 'Error');
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModalActive]);
 
   return (
     <div>
-      {errorMessage && errorMessage}
       <table>
         <thead>
           <tr>

@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import './../pageStyles.scss';
+import alertContext from '../../contexts/AlertContext';
 
 const UpdatePassword = () => {
+  const alertContxt = useContext(alertContext);
+
   const [formData, setFormData] = useState({});
-  const [alertMessage, setAlertMessage] = useState(null);
 
   const handleFormInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,17 +24,17 @@ const UpdatePassword = () => {
       .then((res) => res.json())
       .then((results) => {
         if (results.status === 'success') {
-          setAlertMessage(results.message);
+          alertContxt.setAlert(results.message, 'Well done!');
         } else {
           throw new Error(results.message);
         }
       })
-      .catch((err) => setAlertMessage(err.message));
+      .catch((err) =>
+        alertContxt.setAlert(err.message, 'Something went wrong')
+      );
   };
   return (
     <div className="change_password__container">
-      {alertMessage && <b>{alertMessage}</b>}
-
       <h1 style={{ textAlign: 'left', margin: '1em 0' }}>Security settings</h1>
       <form onSubmit={handleFormSubmit}>
         <div className="input-block">

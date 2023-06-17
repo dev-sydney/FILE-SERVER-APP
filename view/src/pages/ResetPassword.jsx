@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import alertContext from '../contexts/AlertContext';
 
 const ResetPassword = () => {
+  const alertContxt = useContext(alertContext);
+
   const [formData, setFormData] = useState({});
-  const [alertMessage, setAlertMessage] = useState(null);
 
   const { resetToken } = useParams();
   const navigateTo = useNavigate();
@@ -22,7 +24,7 @@ const ResetPassword = () => {
       .then((res) => res.json())
       .then((results) => {
         if (results.status === 'success') {
-          setAlertMessage(results.message);
+          alertContxt.setAlert(results.message, 'Awesome');
 
           setTimeout(() => {
             navigateTo('/login');
@@ -31,11 +33,13 @@ const ResetPassword = () => {
           throw new Error(results.message);
         }
       })
-      .catch((err) => setAlertMessage(err.message));
+      .catch((err) =>
+        alertContxt.setAlert(err.message, 'Something went wrong')
+      );
   };
+
   return (
     <div className="resetpassword-container">
-      {alertMessage && <b>{alertMessage}</b>}
       <form className="auth__form" onSubmit={handleFormSubmit}>
         <div className="form__group">
           <label htmlFor="" className="form__label">

@@ -1,0 +1,25 @@
+.alert_toast {
+  min-height: 5em;
+  width: 100%;
+  outline: 1px solid red;
+  overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.7em;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  .flex_2,
+  .flex_3 {
+    text-align: left;
+  }
+}
+.hide_toast {
+  transform: translateY(100%);
+}
+.show_toast {
+  transform: translateY(0%);
+}

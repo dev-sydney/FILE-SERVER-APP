@@ -1,17 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { UilUserCircle } from '@iconscout/react-unicons';
+import alertContext from '../../contexts/AlertContext';
+
 import './overviewStyle.scss';
 
 const Overview = () => {
   const [overviewItems, setOverviewItems] = useState(null);
+  const alertContxt = useContext(alertContext);
+
   const fieldNames = [
     'Businesses',
     'Files shared',
     'Uploaded files',
     'Clients',
   ];
-
-  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     fetch('/api/v1/files/overview')
@@ -24,12 +26,15 @@ const Overview = () => {
           throw new Error(results.message);
         }
       })
-      .catch((err) => setErrorMsg(err.message));
+      .catch((err) =>
+        alertContxt.setAlert(err.message, "Hmm, something's wrong!")
+      );
+
+    //eslint-disable-next-line
   }, []);
 
   return (
     <div>
-      {errorMsg && <b>{errorMsg}</b>}
       <h2>Overview</h2>
       <div className="overview_item__container">
         {overviewItems &&

@@ -1,12 +1,14 @@
-import { useRef, useState } from 'react';
+import { useRef, useContext } from 'react';
 import { UilUser } from '@iconscout/react-unicons';
 import { Link } from 'react-router-dom';
 
 import './../pageStyles.scss';
+import alertContext from '../../contexts/AlertContext';
 
 const AccountSettings = () => {
+  const alertContxt = useContext(alertContext);
+
   let formData = useRef(new FormData());
-  let [alertMessage, setAlertMessage] = useState(null);
 
   const handleFormInputChange = (e) => {
     if (e.target.name === 'photo') {
@@ -25,19 +27,19 @@ const AccountSettings = () => {
       .then((res) => res.json())
       .then((results) => {
         if (results.status === 'success') {
-          setAlertMessage(results.message);
+          alertContxt.setAlert(results.message, 'Well done');
           formData.current = new FormData();
         } else {
           formData.current = new FormData();
           throw new Error(results.messsage);
         }
       })
-      .catch((err) => setAlertMessage(err.message));
+      .catch((err) =>
+        alertContxt.setAlert(err.message, 'Something went wrong')
+      );
   };
   return (
     <div className="profile__container">
-      {alertMessage && <b>{alertMessage}</b>}
-
       <h1 style={{ textAlign: 'left', margin: '1em 0' }}>Edit Profile</h1>
       <form encType="multipart/form-data" onSubmit={handleFormSubmit}>
         <div

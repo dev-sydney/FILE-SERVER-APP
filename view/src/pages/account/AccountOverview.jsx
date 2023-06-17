@@ -5,12 +5,14 @@ import { Link, useNavigate } from 'react-router-dom';
 
 // import './../pages/pageStyles.scss';
 import './../pageStyles.scss';
+import alertContext from '../../contexts/AlertContext';
 const AccountOverview = () => {
   const navigateTo = useNavigate();
 
   const userContxt = useContext(userContext);
+  const alertContxt = useContext(alertContext);
+
   const [userData, setUserData] = useState(null);
-  const [AlertMessage, setAlertMessage] = useState(null);
 
   useEffect(() => {
     fetch(`/api/v1/users/${userContxt.user.user_id}`)
@@ -22,13 +24,12 @@ const AccountOverview = () => {
           throw new Error(results.message);
         }
       })
-      .catch((err) => setAlertMessage(err.message));
+      .catch((err) => alertContxt.setAlert(err.message, "Something's wrong"));
     //eslint-disable-next-line
   }, []);
 
   return (
     <div className="overview__container">
-      {AlertMessage && AlertMessage}
       <div className="row">
         <h3>Account Overview</h3>
       </div>
