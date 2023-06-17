@@ -17,6 +17,8 @@ import ClientsPage from './pages/ClientsPage';
 import AccountOverview from './pages/account/AccountOverview';
 import AccountSettings from './pages/account/AccountSettings';
 import UpdatePassword from './pages/account/UpdatePassword';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 import './App.css';
 
@@ -35,6 +37,11 @@ function App() {
             <Route path="/" element={<UserFeed />} />
             <Route path="/account/overview" element={<AccountOverview />} />
             <Route path="/account/profile" element={<AccountSettings />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route
+              path="/password-reset/:resetToken"
+              element={<ResetPassword />}
+            />
             <Route
               path="/account/update-password"
               element={<UpdatePassword />}
