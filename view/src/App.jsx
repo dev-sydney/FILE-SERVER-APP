@@ -14,6 +14,9 @@ import AccountVerification from './pages/AccountVerification';
 import UserFIlesPage from './pages/UserFIlesPage';
 import Explore from './pages/Explore';
 import ClientsPage from './pages/ClientsPage';
+import AccountOverview from './pages/account/AccountOverview';
+import AccountSettings from './pages/account/AccountSettings';
+import UpdatePassword from './pages/account/UpdatePassword';
 
 import './App.css';
 
@@ -30,6 +33,12 @@ function App() {
               element={<AccountVerification />}
             />
             <Route path="/" element={<UserFeed />} />
+            <Route path="/account/overview" element={<AccountOverview />} />
+            <Route path="/account/profile" element={<AccountSettings />} />
+            <Route
+              path="/account/update-password"
+              element={<UpdatePassword />}
+            />
             <Route path="/admin" element={<Admin />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/admin/upload" element={<UploadPage />} />

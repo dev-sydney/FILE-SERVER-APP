@@ -459,6 +459,7 @@ exports.updateUserPassword = catchAsyncError(async (req, res, next) => {
 
   if (updateCommandResult.affectedRows > 0) {
     res.status(200).json({
+      status: 'success',
       message: 'Password updated successfully',
     });
   } else {

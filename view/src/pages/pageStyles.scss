@@ -1,0 +1,85 @@
+.overview__container {
+  // @include page-container;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  min-height: inherit;
+  overflow: auto;
+  padding: 0 1%;
+  .displayname {
+    // outline: 1px solid red;
+    display: flex;
+    padding: 0 1em;
+  }
+  // .password_link {
+  // }
+  .row {
+    // outline: 1px solid blue;
+    text-align: center;
+    margin: 0.5em 0;
+  }
+
+  .overview_btn {
+    //   @include btn;
+    color: white;
+    // background-color: #1fa1f8;
+    background-color: #284b63;
+
+    font-size: 1rem;
+    padding: 0.7rem 3rem;
+    border-radius: 5px;
+    text-transform: uppercase;
+    display: inline-block;
+    text-decoration: none;
+    width: 100%;
+    transition: all 0.4s;
+    font-weight: 400;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /*Add later when we use this for the button in form*/
+    border: none;
+    cursor: pointer;
+
+    width: 92%;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .logout {
+    background-color: rgba(231, 231, 231, 0.315);
+    color: #284b63;
+    outline: 1.5px solid #284b63;
+    font-weight: 600;
+  }
+  .labels {
+    text-align: left;
+    padding: 0 1em;
+    margin: 0;
+  }
+}
+.save__btn {
+  // @include btn;
+  color: white;
+  // background-color: #1fa1f8;
+  background-color: #284b63;
+
+  font-size: 1rem;
+  padding: 0.7rem 3rem;
+  border-radius: 5px;
+  text-transform: uppercase;
+  display: inline-block;
+  text-decoration: none;
+  width: 100%;
+  transition: all 0.4s;
+  font-weight: 400;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  /*Add later when we use this for the button in form*/
+  border: none;
+  cursor: pointer;
+  // width: fit-content;
+  margin: 0.5em 0;
+  display: flex;
+  justify-content: center;
+  // padding-top: 0.9em;
+}

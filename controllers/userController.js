@@ -71,6 +71,7 @@ exports.updateAccount = catchAsyncError(async (req, res, next) => {
 
   if (updateCommandResult.affectedRows > 0) {
     res.status(200).json({
+      status: 'success',
       message: 'Account updated successfully',
     });
   } else {
@@ -97,5 +98,22 @@ exports.getAllUsers = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     users: queryResults,
+  });
+});
+
+exports.getUser = catchAsyncError(async (req, res, next) => {
+  if (!req.params.user_id)
+    return next(new GlobalAppError('No user provided', 400));
+
+  const [queryResults] = await pool.query(
+    `SELECT email_address,photo,user_name FROM Users WHERE user_id=?`,
+    [+req.params.user_id]
+  );
+  if (queryResults.length === 0)
+    return next(new GlobalAppError('No user found', 404));
+
+  res.status(200).json({
+    status: 'success',
+    user: queryResults[0],
   });
 });
