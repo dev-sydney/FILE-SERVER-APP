@@ -18,8 +18,33 @@ const multerStorage = multer.diskStorage({
   },
 });
 
+const multerFilter = (req, curFile, cb) => {
+  let allowedFormats = ['application', 'audio', 'image', 'video'];
+
+  if (!allowedFormats.includes(curFile.mimetype.split('/')[0])) {
+    cb(
+      new GlobalAppError(
+        'Unsupported format, please upload only PDFs,audio,images or videos'
+      )
+    );
+  }
+
+  if (
+    curFile.mimetype.startsWith('application') &&
+    curFile.mimetype.split('/')[1] !== 'pdf'
+  ) {
+    cb(
+      new GlobalAppError(
+        'Unsupported format, please upload only PDFs,audio,images or videos'
+      )
+    );
+  }
+  cb(null, true);
+};
+
 const upload = multer({
   storage: multerStorage,
+  fileFilter: multerFilter,
 });
 
 exports.uploadFile = upload.single('file');
