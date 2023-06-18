@@ -32,6 +32,7 @@ const userReducer = (state, action) => {
         ...state,
         userALert: null,
       };
+
     case 'SET_USER_POST_VERIFICATION':
       localStorage.removeItem('DDS_USER');
       localStorage.setItem('DDS_USER', JSON.stringify(action.payload));
@@ -39,6 +40,12 @@ const userReducer = (state, action) => {
         ...state,
         isLoggedIn: true,
         user: action.payload,
+      };
+
+    case 'SET_NAVBAR_VISIBIITY':
+      return {
+        ...state,
+        navBarVisibiltyStatus: action.payload,
       };
     default:
       return state;

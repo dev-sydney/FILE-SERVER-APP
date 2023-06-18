@@ -1,0 +1,41 @@
+.nav__bar {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  //   padding: 1em 1em;
+  //   z-index: 3;
+  outline: 2px solid black;
+  width: 20%;
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    // width: 25%;
+    //   background-color: #f1f1f1;
+    height: 100%; /* Full height */
+    position: sticky; /* Make it stick, even on scroll */
+    overflow: auto;
+    // border-top: 1px solid gray;
+    // display: flex;
+    li {
+      text-align: center;
+      border-bottom: 1px solid #555;
+      display: flex;
+      justify-content: center;
+      a {
+        display: flex;
+        span {
+          margin-top: auto;
+          margin-bottom: auto;
+        }
+      }
+    }
+  }
+}
+.not-loggedin {
+  display: none;
+}
+li:last-child {
+  border-bottom: none;
+}

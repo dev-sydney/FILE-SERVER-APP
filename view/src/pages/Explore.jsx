@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import FeedItem from '../components/user-feed/FeedItem';
+import userContext from '../contexts/UserContext';
 /**
  *
  * @returns The Explore Page Component for searching for files
@@ -8,6 +9,13 @@ const Explore = () => {
   const [searchField, setSearchField] = useState('title');
   const [searchResults, setSearchResults] = useState(null);
   const [typingTimeout, setTypingTimeout] = useState('');
+
+  const userContxt = useContext(userContext);
+
+  useEffect(() => {
+    userContxt.setNavBarVisibilty(true);
+    //eslint-disable-next-line
+  }, []);
 
   const onChange = (e) => {
     clearTimeout(typingTimeout);

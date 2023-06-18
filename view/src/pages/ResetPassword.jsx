@@ -1,11 +1,17 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import alertContext from '../contexts/AlertContext';
+import userContext from '../contexts/UserContext';
 
 const ResetPassword = () => {
   const alertContxt = useContext(alertContext);
-
+  const userContxt = useContext(userContext);
   const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    userContxt.setNavBarVisibilty(false);
+    //eslint-disable-next-line
+  }, []);
 
   const { resetToken } = useParams();
   const navigateTo = useNavigate();

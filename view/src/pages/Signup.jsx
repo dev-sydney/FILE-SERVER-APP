@@ -1,10 +1,15 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import userContext from './../contexts/UserContext';
 
 const Signup = () => {
   const userContxt = useContext(userContext);
 
   const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    userContxt.setNavBarVisibilty(false);
+    //eslint-disable-next-line
+  }, []);
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

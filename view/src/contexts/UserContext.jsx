@@ -11,6 +11,7 @@ export const UserContextProvider = ({ children }) => {
     isLoggedIn: false,
     signUpSuccessMessage: null,
     userALert: null,
+    navBarVisibiltyStatus: true,
   };
 
   const [state, dispatch] = useReducer(userReducer, intialState);
@@ -123,6 +124,12 @@ export const UserContextProvider = ({ children }) => {
       clearContextAlerts();
     }
   };
+  const setNavBarVisibilty = (NavBarHiddenValue) => {
+    dispatch({
+      type: 'SET_NAVBAR_VISIBIITY',
+      payload: NavBarHiddenValue,
+    });
+  };
 
   return (
     <userContext.Provider
@@ -130,10 +137,12 @@ export const UserContextProvider = ({ children }) => {
         user: state.user,
         signUpSuccessMessage: state.signUpSuccessMessage,
         userALert: state.userALert,
+        navBarVisibiltyStatus: state.navBarVisibiltyStatus,
         loginUser,
         registerUser,
         logout,
         setUserAfterVerification,
+        setNavBarVisibilty,
       }}
     >
       {children}

@@ -4,9 +4,14 @@ import Modalbackground from '../components/modal/ModalBackground';
 // import PropTypes from 'prop-types'
 import './../components/clients/clientStyle.scss';
 import alertContext from '../contexts/AlertContext';
-
+import userContext from '../contexts/UserContext';
+/**
+ * This page fetches data(all the clients of a business) and renders them
+ * @returns
+ */
 const ClientsPage = () => {
   const alertContxt = useContext(alertContext);
+  const userContxt = useContext(userContext);
 
   const [clientContacts, setClientContacts] = useState(null);
   const [isFormModalActive, setIsFormModalActive] = useState(false);
@@ -27,6 +32,9 @@ const ClientsPage = () => {
       .catch((err) =>
         alertContxt.setAlert(err.message, 'Something went wrong!')
       );
+
+    userContxt.setNavBarVisibilty(true);
+    //eslint-disable-next-line
   }, [isFormModalActive]);
 
   /**

@@ -15,7 +15,6 @@ const UsersTable = () => {
       .then((res) => res.json())
       .then((results) => {
         if (results.status === 'success') {
-          console.log(results.users);
           setUsers(results.users);
         } else {
           throw new Error(results.message);

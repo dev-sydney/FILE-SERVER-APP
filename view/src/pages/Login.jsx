@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import userContext from './../contexts/UserContext';
 import { useNavigate } from 'react-router';
 
@@ -14,7 +14,10 @@ const Login = () => {
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  useEffect(() => {
+    userContxt.setNavBarVisibilty(false);
+    //eslint-disable-next-line
+  }, []);
   return (
     <div>
       <form

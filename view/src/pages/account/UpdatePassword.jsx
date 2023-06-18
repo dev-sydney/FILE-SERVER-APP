@@ -1,12 +1,19 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './../pageStyles.scss';
 import alertContext from '../../contexts/AlertContext';
+import userContext from '../../contexts/UserContext';
 
 const UpdatePassword = () => {
   const alertContxt = useContext(alertContext);
+  const userContxt = useContext(userContext);
 
   const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    userContxt.setNavBarVisibilty(true);
+    //eslint-disable-next-line
+  }, []);
 
   const handleFormInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
