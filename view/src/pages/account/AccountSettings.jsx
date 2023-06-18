@@ -1,14 +1,20 @@
-import { useRef, useContext } from 'react';
+import { useRef, useContext, useEffect } from 'react';
 import { UilUser } from '@iconscout/react-unicons';
 import { Link } from 'react-router-dom';
 
 import './../pageStyles.scss';
 import alertContext from '../../contexts/AlertContext';
-
+import userContext from '../../contexts/UserContext';
 const AccountSettings = () => {
   const alertContxt = useContext(alertContext);
+  const userContxt = useContext(userContext);
 
   let formData = useRef(new FormData());
+
+  useEffect(() => {
+    userContxt.setNavBarVisibilty(true);
+    //eslint-disable-next-line
+  }, []);
 
   const handleFormInputChange = (e) => {
     if (e.target.name === 'photo') {

@@ -1,5 +1,5 @@
 import PinInput from 'react-pin-input';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import userContext from '../contexts/UserContext';
 import { useNavigate } from 'react-router';
 
@@ -9,6 +9,11 @@ const AccountVerification = () => {
 
   const [verification_code] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
+
+  useEffect(() => {
+    userContxt.setNavBarVisibilty(false);
+    //eslint-disable-next-line
+  }, []);
 
   const onComplete = (value) => {
     fetch('/api/v1/users/verification', {

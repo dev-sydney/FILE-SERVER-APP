@@ -7,10 +7,7 @@ const alertContext = createContext();
 
 export const AlertContextProvider = ({ children }) => {
   const intialState = {
-    alertMessage: {
-      alertType: 'success',
-      message: 'Logged in successfully',
-    },
+    alertMessage: null,
   };
   const [state, dispatch] = useReducer(alertReducer, intialState);
 
@@ -52,7 +49,7 @@ export const AlertContextProvider = ({ children }) => {
 };
 
 AlertContextProvider.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.any,
 };
 
 // eslint-disable-next-line react-refresh/only-export-components

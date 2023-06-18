@@ -5,6 +5,11 @@ import DocsMetaDataTable from '../components/docs-meta-data/DocsMetaDataTable';
 import Modalbackground from '../components/modal/ModalBackground';
 import UploadDocumentForm from '../components/upload-file-form/UploadDocumentForm';
 
+/**
+ * This is the page component from which the admin will be able upload new files/documents for a business,
+ * as well viewing the stats of all the files belonging to the business (no of downloads & shares)
+ * @returns
+ */
 const UserFIlesPage = () => {
   const { user_id } = useParams();
   const [isModalActive, setIsModalActive] = useState(false);

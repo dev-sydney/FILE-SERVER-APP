@@ -25,6 +25,7 @@ const AccountOverview = () => {
         }
       })
       .catch((err) => alertContxt.setAlert(err.message, "Something's wrong"));
+    userContxt.setNavBarVisibilty(true);
     //eslint-disable-next-line
   }, []);
 

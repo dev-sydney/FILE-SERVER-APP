@@ -1,8 +1,19 @@
 #root {
   max-width: 1280px;
-  /* margin: 0 auto; */
-  /* padding: 2rem; */
+  min-height: inherit;
   text-align: center;
+}
+html {
+  min-height: 100vh;
+  max-height: 100vh;
+  /* min-width: 100vh;
+  max-width: 100vh; */
+}
+body {
+  min-height: inherit;
+  max-height: inherit;
+  /* min-width: inherit;
+  max-width: inherit; */
 }
 h1,
 h2,
@@ -10,7 +21,12 @@ h3,
 p {
   margin: 0;
 }
-
+.work_space {
+  display: flex;
+  outline: 2px solid blue;
+  min-height: inherit;
+  max-height: inherit;
+}
 div.input-block {
   position: relative;
   margin: 0.7em 0;

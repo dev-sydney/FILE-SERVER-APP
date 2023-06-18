@@ -1,10 +1,17 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import alertContext from '../contexts/AlertContext';
+import userContext from '../contexts/UserContext';
 
 const ForgotPassword = () => {
   const alertContxt = useContext(alertContext);
+  const userContxt = useContext(userContext);
 
   const [emailAddress, setEmailAddress] = useState('');
+
+  useEffect(() => {
+    userContxt.setNavBarVisibilty(false);
+    //eslint-disable-next-line
+  }, []);
   const handleFormInputChange = (e) => {
     setEmailAddress(e.target.value);
   };
