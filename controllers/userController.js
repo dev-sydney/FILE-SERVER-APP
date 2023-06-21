@@ -88,7 +88,8 @@ exports.getAllUsers = catchAsyncError(async (req, res, next) => {
   const features = new APIFeatures(req.query, 'Users')
     .filter()
     .sort()
-    .fieldLimit();
+    .fieldLimit()
+    .limitQueryResults();
 
   const sqlQuery = features.getSQLQueryString();
   const fieldValues = features.values;

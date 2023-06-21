@@ -44,7 +44,8 @@ exports.getAllClientsContacts = catchAsyncError(async (req, res, next) => {
   const features = new APIFeatures(req.query, 'Clients')
     .filter()
     .sort()
-    .fieldLimit();
+    .fieldLimit()
+    .limitQueryResults();
 
   let queryString = features.getSQLQueryString();
   let fieldValues = features.values;

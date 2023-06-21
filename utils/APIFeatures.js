@@ -10,6 +10,7 @@ module.exports = class APIFeatures {
     this.SQLWhereClause = 'WHERE ';
     this.SQLOrderByClause = '';
     this.SQLSelectClause = '';
+    this.SQLLimitQueryResultsClause = '';
     this.values = [];
   }
 
@@ -113,6 +114,12 @@ module.exports = class APIFeatures {
     return this;
   }
 
+  limitQueryResults() {
+    if (this.queryString.limit || this.queryString.limit !== '') {
+      this.SQLLimitQueryResultsClause = ` LIMIT ${+this.queryString.limit}`;
+    }
+    return this;
+  }
   /**
    *
    * @returns The entire SQL query string with the question mark place holders
@@ -122,7 +129,8 @@ module.exports = class APIFeatures {
       this.SQLSelectClause +
       `${this.table} ` +
       this.SQLWhereClause +
-      this.SQLOrderByClause
+      this.SQLOrderByClause +
+      this.SQLLimitQueryResultsClause
     );
   }
 };

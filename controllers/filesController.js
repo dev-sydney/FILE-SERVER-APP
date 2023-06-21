@@ -94,7 +94,8 @@ exports.getFiles = catchAsyncError(async (req, res, next) => {
   let features = new APIFeatures(req.query, 'Files')
     .filter()
     .sort()
-    .fieldLimit();
+    .fieldLimit()
+    .limitQueryResults();
 
   let queryString = features.getSQLQueryString();
   let fieldValues = features.values;
