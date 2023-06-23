@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { UilTimes } from '@iconscout/react-unicons';
+import { UilTimes, UilSpinner, UilPlusCircle } from '@iconscout/react-unicons';
+import SkeletonClientItem from './SkeletonClientItem';
 
 import './clientStyle.scss';
 /**
@@ -20,6 +21,11 @@ const ClientListModalWindow = ({
   const [checked, setChecked] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [alertMessage, setAlertMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [isFetchingClients, setIsFetchingClients] = useState(null);
+
+  const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
   const formData = useRef({
     caption: '',
@@ -27,6 +33,8 @@ const ClientListModalWindow = ({
   });
   // TODO: Get all the clients contacts for the business
   useEffect(() => {
+    setIsFetchingClients(true);
+
     fetch(
       '/api/v1/clients/?fields=client_first_name,client_last_name,client_email,client_id&client_status=1&sort=client_last_name,client_first_name:asc'
     )
@@ -34,7 +42,9 @@ const ClientListModalWindow = ({
       .then((results) => {
         if (results.status === 'success') {
           setClients(results.clientsContacts);
+          setIsFetchingClients(false);
         } else {
+          setIsFetchingClients(false);
           throw new Error(results.message);
         }
       })
@@ -86,6 +96,8 @@ const ClientListModalWindow = ({
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
+    setIsLoading(true);
+
     fetch(
       `/api/v1/files/share?client_ids=${checked.join(
         ','
@@ -101,6 +113,7 @@ const ClientListModalWindow = ({
       .then((res) => res.json())
       .then((results) => {
         if (results.status === 'success') {
+          setIsLoading(false);
           setAlertMessage(results.message);
 
           setTimeout(() => {
@@ -109,6 +122,7 @@ const ClientListModalWindow = ({
             setIsCheckBoxActive(false);
           }, 800);
         } else {
+          setIsLoading(false);
           throw new Error(results.message);
         }
       })
@@ -117,49 +131,84 @@ const ClientListModalWindow = ({
 
   return (
     <div className="client_modal_window">
-      <div style={{ textAlign: 'right' }}>
+      <div style={{ textAlign: 'right', marginTop: '.7em' }}>
         <UilTimes
           size="2em"
-          color="#E9EBEF"
           onClick={() => {
             setIsModalActive(false);
           }}
+          className="close-modal-btn"
         />
       </div>
 
-      {errorMessage && errorMessage}
-      {/* NOTE: Conditional rendering logic, of the response gotten after attempting to share a file */}
-      {alertMessage && alertMessage}
-      <h2 style={{ textAlign: 'left' }}>Your Clients</h2>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {/* NOTE: Conditional rendering logic of the component to display an error message incase they was trouble getting the client's contacts*/}
+        {errorMessage && (
+          <div className="component-alert">
+            <b>{errorMessage}</b>
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {/* NOTE: Conditional rendering logic, of the component to display an alert message after attempting to share a file */}
+        {alertMessage && (
+          <div className="component-alert">
+            <b>{alertMessage}</b>
+          </div>
+        )}
+      </div>
+
+      <h2 style={{ textAlign: 'left', padding: '0 0.4em' }}>
+        Share to your clients
+      </h2>
 
       <div>
         {/* NOTE:Form for submitting the subject & caption */}
-        <form onSubmit={handleFormSubmit}>
-          <div className="form_group">
-            <label htmlFor="">Subject</label>
+        <form onSubmit={handleFormSubmit} className="email-subject-form">
+          <div className="input-block" style={{ width: '20em' }}>
             <input
               type="text"
-              placeholder="Subject"
               name="subject"
               onChange={handleFormInputChange}
+              required
             />
+            <span className="placeholder">Subject:</span>
           </div>
-          <input type="submit" value={'SEND'} />
-        </form>
 
-        {/*NOTE: The select all checkbox */}
-        <span>
-          <input
-            type="checkbox"
-            onChange={handleSelectAllChange}
-            checked={checked.length === clients?.length}
-          />
-          <label htmlFor="">Select all</label>
-        </span>
+          <button className="submit_btn email-submit">
+            {isLoading ? (
+              <span>
+                <UilSpinner size="1.5em" className="spinner-icon" />
+              </span>
+            ) : (
+              'Send'
+            )}
+          </button>
+        </form>
       </div>
+      {/*NOTE: The 'select all' checkbox */}
+      <span
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          padding: '0 1em',
+        }}
+      >
+        <input
+          type="checkbox"
+          onChange={handleSelectAllChange}
+          checked={checked.length === clients?.length}
+        />
+        <label htmlFor="" style={{ margin: 'auto 0' }}>
+          Select all
+        </label>
+      </span>
 
       {/*NOTE: The conditonal rendering logic of all the clients */}
-      {clients &&
+      {isFetchingClients ? (
+        arr.map((el) => <SkeletonClientItem key={el} />)
+      ) : clients?.length > 0 ? (
         clients.map((client) => (
           <div className="client_item" key={client.client_id}>
             <div className="checkbox">
@@ -175,7 +224,21 @@ const ClientListModalWindow = ({
               <p>{client.client_email}</p>
             </div>
           </div>
-        ))}
+        ))
+      ) : (
+        <div
+          style={{
+            margin: '0 auto',
+            width: 'fit-content',
+          }}
+        >
+          <p>No clients added yet</p>
+          <button className="add-client-btn">
+            <span>Add Client</span>
+            <UilPlusCircle size="1.3em" color="#121927" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

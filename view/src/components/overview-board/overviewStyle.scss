@@ -1,11 +1,66 @@
 .overview_item__container {
   display: flex;
-  outline: 1px solid black;
+  column-gap: 1em;
 
   .overview_item {
-    outline: 1px solid blue;
     // height: 3em;
-    width: 5em;
-    border-radius: 10px;
+    min-width: 10em;
+    max-width: 10em;
+    color: white;
+    // background-color: #eb6297;
+    border-radius: 5px;
+    display: flex;
+    padding: 0.5em;
+    .flex-1 {
+      margin: auto auto;
+    }
+
+    .flex-2 {
+      // text-align: left;
+      margin: 1em;
+      b {
+        font-size: 1.5em;
+        text-align: center;
+        font-weight: lighter;
+      }
+      p {
+        white-space: nowrap;
+        font-weight: 900;
+      }
+    }
+  }
+  .item-1 {
+    background: rgb(184, 83, 162);
+    background: linear-gradient(
+      324deg,
+      rgba(184, 83, 162, 1) 17%,
+      rgba(235, 72, 133, 1) 100%
+    );
+  }
+
+  .item-2 {
+    background: rgb(89, 73, 186);
+    background: linear-gradient(
+      324deg,
+      rgba(89, 73, 186, 1) 38%,
+      rgba(135, 94, 192, 1) 85%
+    );
+  }
+
+  .item-3 {
+    background: rgb(97, 77, 188);
+    background: linear-gradient(
+      324deg,
+      rgba(97, 77, 188, 1) 31%,
+      rgba(70, 196, 245, 0.9641981792717087) 100%
+    );
+  }
+  .item-4 {
+    background: rgb(246, 134, 85);
+    background: linear-gradient(
+      324deg,
+      rgba(246, 134, 85, 1) 31%,
+      rgba(255, 185, 45, 1) 100%
+    );
   }
 }

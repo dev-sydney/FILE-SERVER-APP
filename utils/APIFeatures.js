@@ -115,7 +115,7 @@ module.exports = class APIFeatures {
   }
 
   limitQueryResults() {
-    if (this.queryString.limit || this.queryString.limit !== '') {
+    if (this.queryString.limit && this.queryString.limit !== '') {
       this.SQLLimitQueryResultsClause = ` LIMIT ${+this.queryString.limit}`;
     }
     return this;

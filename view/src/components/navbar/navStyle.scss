@@ -2,29 +2,38 @@
   bottom: 0;
   left: 0;
   right: 0;
-  //   padding: 1em 1em;
-  //   z-index: 3;
-  outline: 2px solid black;
-  width: 20%;
-
+  // outline: 2px solid black;
+  min-width: 20%;
+  color: white;
+  background-color: #121927;
+  padding: 0 0.5em;
+  height: inherit;
+  border-radius: 10px;
   ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    // width: 25%;
+
     //   background-color: #f1f1f1;
-    height: 100%; /* Full height */
-    position: sticky; /* Make it stick, even on scroll */
-    overflow: auto;
-    // border-top: 1px solid gray;
-    // display: flex;
+    height: 90%; /* Full height */
+
+    display: flex;
+    flex-direction: column;
     li {
       text-align: center;
-      border-bottom: 1px solid #555;
       display: flex;
       justify-content: center;
+      margin: 1em 0;
       a {
         display: flex;
+        width: 100%;
+        height: 2.5em;
+        justify-content: center;
+        align-content: center;
+        text-decoration: none;
+        -webkit-transition: all 0.5s;
+        transition: all 0.5s;
+        color: gray;
         span {
           margin-top: auto;
           margin-bottom: auto;
@@ -32,10 +41,27 @@
       }
     }
   }
+  .active {
+    background: rgba(255, 255, 255, 0.19);
+    border-radius: 5px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: white;
+    // border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  a:hover {
+    color: white;
+  }
 }
 .not-loggedin {
   display: none;
 }
 li:last-child {
   border-bottom: none;
+}
+.account_link {
+  // margin-top: calc(auto - 10em);
+  margin-top: auto;
 }

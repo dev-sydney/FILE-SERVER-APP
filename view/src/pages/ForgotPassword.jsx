@@ -1,6 +1,8 @@
+/* eslint-disable react/no-unescaped-entities */
 import { useState, useContext, useEffect } from 'react';
 import alertContext from '../contexts/AlertContext';
 import userContext from '../contexts/UserContext';
+import { UilLockOpenAlt } from '@iconscout/react-unicons';
 
 const ForgotPassword = () => {
   const alertContxt = useContext(alertContext);
@@ -36,23 +38,32 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="forgotpassword-container">
+    <div className="auth-page">
       <form className="auth__form" onSubmit={handleFormSubmit}>
-        <div className="form__group">
+        <div style={{ textAlign: 'center' }}>
+          <UilLockOpenAlt color="#121927" size="2em" />
+        </div>
+        <h2 style={{ margin: '0.7em 0' }}>Trouble logging in?</h2>
+        <p style={{ margin: '0.7em 0' }}>
+          Enter your email and we'll send you a link to get back into your
+          account.
+        </p>
+        <div className="input-block">
           <input
             className="form__input"
             type="email"
-            placeholder="Youremail@example.com"
             required
             name="emailAddress"
             value={emailAddress}
             onChange={handleFormInputChange}
           />
+          <span className="placeholder">Email:</span>
         </div>
-        <button className="login-btn " onClick={handleFormSubmit}>
-          {/* NOTE:'condtional rendering logic for displaying either the loading animation or 'done'  */}
-          done
-        </button>
+        <input
+          className="auth-submit submit_btn"
+          type="submit"
+          value={'DONE'}
+        />
       </form>
     </div>
   );

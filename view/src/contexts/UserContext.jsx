@@ -8,10 +8,10 @@ const userContext = createContext();
 export const UserContextProvider = ({ children }) => {
   const intialState = {
     user: JSON.parse(localStorage.getItem('DDS_USER')),
-    isLoggedIn: false,
     signUpSuccessMessage: null,
     userALert: null,
     navBarVisibiltyStatus: true,
+    isLoading: false,
   };
 
   const [state, dispatch] = useReducer(userReducer, intialState);
@@ -31,6 +31,10 @@ export const UserContextProvider = ({ children }) => {
    */
   const loginUser = async (formData, navigateTo) => {
     try {
+      dispatch({
+        type: 'SET_LOADING',
+      });
+
       //TODO: Make the request to the API
       const res = await fetch('/api/v1/users/login', {
         method: 'POST',
@@ -68,6 +72,9 @@ export const UserContextProvider = ({ children }) => {
    */
   const registerUser = async (formData) => {
     try {
+      dispatch({
+        type: 'SET_LOADING',
+      });
       //TODO: Make the request to the API
       const res = await fetch('/api/v1/users/signup', {
         method: 'POST',
@@ -138,6 +145,7 @@ export const UserContextProvider = ({ children }) => {
         signUpSuccessMessage: state.signUpSuccessMessage,
         userALert: state.userALert,
         navBarVisibiltyStatus: state.navBarVisibiltyStatus,
+        isLoading: state.isLoading,
         loginUser,
         registerUser,
         logout,

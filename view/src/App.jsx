@@ -6,10 +6,10 @@ import { UserContextProvider } from './contexts/UserContext';
 import { AlertContextProvider } from './contexts/AlertContext';
 
 //NOTE:PAGE IMPORTS
-import Login from './pages/Login';
+import Login from './pages/login-signup/Login';
 import UserFeed from './pages/UserFeed';
 import Admin from './pages/Admin';
-import Signup from './pages/Signup';
+import Signup from './pages/login-signup/Signup';
 import AccountVerification from './pages/AccountVerification';
 import UserFIlesPage from './pages/UserFIlesPage';
 import Explore from './pages/Explore';
@@ -19,6 +19,7 @@ import AccountSettings from './pages/account/AccountSettings';
 import UpdatePassword from './pages/account/UpdatePassword';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import AllUsersPage from './pages/AllUsersPage';
 
 import RequireAuthentication from './components/auth/RequireAuthentication';
 import RequireAuthorization from './components/auth/RequireAuthorization';
@@ -109,9 +110,23 @@ function App() {
                     />
                   }
                 />
+                <Route
+                  path="/admin/users"
+                  element={
+                    <RequireAuthentication
+                      child={
+                        <RequireAuthorization
+                          child={<AllUsersPage />}
+                          authorizedRoles={['admin']}
+                          route={'/'}
+                        />
+                      }
+                    />
+                  }
+                />
 
                 <Route
-                  path="/users/:user_id"
+                  path="/admin/users/:user_id"
                   element={
                     <RequireAuthentication
                       child={
@@ -124,6 +139,7 @@ function App() {
                     />
                   }
                 />
+
                 {/* NOTE: The following routes are allowed to 'business' accounts */}
                 <Route
                   path="/"

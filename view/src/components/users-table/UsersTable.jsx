@@ -1,16 +1,19 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
+import PropTypes from 'prop-types';
 
 import './usersTableStyle.scss';
 import alertContext from '../../contexts/AlertContext';
 
-const UsersTable = () => {
+const UsersTable = ({ numResults }) => {
   const [users, setUsers] = useState(null);
   const alertContxt = useContext(alertContext);
 
   useEffect(() => {
     fetch(
-      '/api/v1/users/?privilege=business&fields=user_id,user_name,photo,email_address,is_verified&sort=user_name'
+      `/api/v1/users/?privilege=business&fields=user_id,user_name,photo,email_address,is_verified&sort=user_name&limit=${
+        numResults ? numResults : ''
+      }`
     )
       .then((res) => res.json())
       .then((results) => {
@@ -33,9 +36,9 @@ const UsersTable = () => {
         <thead>
           <tr>
             <th>#</th>
-            <th>Name</th>
+            <th>Organization</th>
             <th>Email</th>
-            <th>Status</th>
+            <th style={{ textAlign: 'left', paddingLeft: '10px' }}>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -59,7 +62,7 @@ const UsersTable = () => {
                       }}
                     />
                     <p>
-                      <Link to={`/users/${user.user_id}`}>
+                      <Link to={`/admin/users/${user.user_id}`}>
                         {user.user_name}
                       </Link>
                     </p>
@@ -68,7 +71,15 @@ const UsersTable = () => {
 
                 <td>{user.email_address}</td>
                 {/* TD - Account status */}
-                <td>{user.is_verified === 1 ? 'verified' : 'not verified'}</td>
+                <td style={{ textAlign: 'center' }}>
+                  <p
+                    className={`verification-status ${
+                      user.is_verified === 1 ? 'verified' : 'unverified'
+                    }`}
+                  >
+                    {user.is_verified === 1 ? 'verified' : 'not verified'}
+                  </p>
+                </td>
                 <td>...</td>
               </tr>
             ))}
@@ -77,5 +88,7 @@ const UsersTable = () => {
     </div>
   );
 };
-
+UsersTable.propTypes = {
+  numResults: PropTypes.number,
+};
 export default UsersTable;

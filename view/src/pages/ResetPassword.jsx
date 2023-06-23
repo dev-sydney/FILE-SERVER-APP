@@ -1,7 +1,9 @@
+/* eslint-disable react/no-unescaped-entities */
 import { useState, useContext, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import alertContext from '../contexts/AlertContext';
 import userContext from '../contexts/UserContext';
+import { UilKeySkeleton } from '@iconscout/react-unicons';
 
 const ResetPassword = () => {
   const alertContxt = useContext(alertContext);
@@ -45,36 +47,38 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="resetpassword-container">
+    <div className="auth-page">
       <form className="auth__form" onSubmit={handleFormSubmit}>
-        <div className="form__group">
-          <label htmlFor="" className="form__label">
-            Password:{' '}
-          </label>
+        <UilKeySkeleton color="#121927" size="3em" />
+        <h2 style={{ margin: '0.7em 0' }}>Reset your password!</h2>
+        <p style={{ margin: '0.7em 0' }}>
+          Enter your new password to login into your account
+        </p>
+        <div className="input-block">
           <input
             name="password"
             onChange={handleFormInputChange}
             type="password"
-            className="form__input"
-            placeholder="• • • • • • • •"
+            required
           />
+          <span className="placeholder">Password: </span>
         </div>
-        <div className="form__group">
-          <label htmlFor="" className="form__label">
-            Confirm password:{' '}
-          </label>
+        <div className="input-block">
           <input
             name="password_confirm"
             onChange={handleFormInputChange}
             type="password"
-            className="form__input"
-            placeholder="• • • • • • • •"
+            required
+          />
+          <span className="placeholder">Confirm password: </span>
+        </div>
+        <div style={{ textAlign: 'center', marginTop: '1em' }}>
+          <input
+            className="auth-submit submit_btn"
+            type="submit"
+            value={'DONE'}
           />
         </div>
-        <button className="login-btn " onClick={handleFormSubmit}>
-          {/* NOTE:'condtional rendering logic for displaying either the loading animation or 'done'  */}
-          done
-        </button>
       </form>
     </div>
   );

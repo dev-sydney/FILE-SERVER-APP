@@ -30,7 +30,7 @@ const AccountOverview = () => {
   }, []);
 
   return (
-    <div className="overview__container">
+    <div className=" acc-overview-page">
       <div className="row">
         <h3>Account Overview</h3>
       </div>
@@ -58,7 +58,7 @@ const AccountOverview = () => {
       <div className="row displayname">
         <h3>{userData && userData.user_name}</h3>
         <Link to="/account/profile" style={{ marginLeft: 'auto' }}>
-          <UilEditAlt color="#284b63" size="3em" />
+          <UilEditAlt color="#284b63" size="2em" />
         </Link>
       </div>
 
@@ -66,7 +66,7 @@ const AccountOverview = () => {
       <div className="row displayname">
         <h3>{userData ? userData.email_address : ''}</h3>
         <Link to="/account/profile" style={{ marginLeft: 'auto' }}>
-          <UilEditAlt color="#284b63" size="30" />
+          <UilEditAlt color="#284b63" size="2em" />
         </Link>
       </div>
 

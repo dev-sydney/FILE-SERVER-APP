@@ -1,11 +1,16 @@
 const userReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_LOADING':
+      return {
+        ...state,
+        isLoading: true,
+      };
     case 'SIGN_IN_USER':
       localStorage.removeItem('DDS_USER');
       localStorage.setItem('DDS_USER', JSON.stringify(action.payload));
       return {
         ...state,
-        isLoggedIn: true,
+        isLoading: false,
         user: action.payload,
       };
 
@@ -14,7 +19,7 @@ const userReducer = (state, action) => {
       //   localStorage.setItem('DDS_USER', JSON.stringify(action.payload));
       return {
         ...state,
-        isLoggedIn: true,
+        isLoading: false,
         signUpSuccessMessage: action.payload,
       };
     case 'LOGOUT':
@@ -38,7 +43,6 @@ const userReducer = (state, action) => {
       localStorage.setItem('DDS_USER', JSON.stringify(action.payload));
       return {
         ...state,
-        isLoggedIn: true,
         user: action.payload,
       };
 

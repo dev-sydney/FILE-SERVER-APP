@@ -1,10 +1,13 @@
+/* eslint-disable react/no-unescaped-entities */
 import { useState } from 'react';
-import { UilTimes } from '@iconscout/react-unicons';
+import { UilTimes, UilSpinner } from '@iconscout/react-unicons';
 import PropTypes from 'prop-types';
+import './clientStyle.scss';
 
 const AddClientForm = ({ setIsFormModalActive }) => {
   const [formData, setFormData] = useState({});
   const [alertMessage, setAlertMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFormInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -12,6 +15,8 @@ const AddClientForm = ({ setIsFormModalActive }) => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+
+    setIsLoading(true);
 
     fetch('/api/v1/clients/', {
       method: 'POST',
@@ -23,54 +28,79 @@ const AddClientForm = ({ setIsFormModalActive }) => {
       .then((res) => res.json())
       .then((results) => {
         if (results.status === 'success') {
+          setIsLoading(false);
           setAlertMessage(results.message);
           setTimeout(() => {
             setAlertMessage(null);
           }, 1000);
         } else {
+          setIsLoading(false);
+
           throw new Error(results.message);
         }
       })
       .catch((err) => setAlertMessage(err.message));
   };
   return (
-    <div style={{ background: 'white' }}>
+    <div style={{ background: 'white' }} className="add-client-form">
       <div style={{ textAlign: 'right' }}>
         <UilTimes
           size="2em"
-          color="#E9EBEF"
+          className="close-modal-btn"
           onClick={() => {
             setIsFormModalActive(false);
           }}
         />
       </div>
-      {alertMessage && <b>{alertMessage}</b>}
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {/* NOTE: Conditional rendering logic, of the component to display an alert message after attempting to share a file */}
+        {alertMessage && (
+          <div className="component-alert">
+            <b>{alertMessage}</b>
+          </div>
+        )}
+      </div>
+
+      <h2>Add a client!</h2>
+      <p>Please enter the client's names and email to be added.</p>
+
       <form onSubmit={handleFormSubmit}>
-        <div className="form_group">
-          <label htmlFor="">First name:</label>
+        <div className="input-block">
           <input
+            required
             type="text"
             name="client_first_name"
             onChange={handleFormInputChange}
           />
+          <span className="placeholder">First name:</span>
         </div>
-        <div className="form_group">
-          <label htmlFor="">Last name:</label>
+        <div className="input-block">
           <input
+            required
             type="text"
             name="client_last_name"
             onChange={handleFormInputChange}
           />
+          <span className="placeholder">Last name:</span>
         </div>
-        <div className="form_group">
-          <label htmlFor="">Email address:</label>
+        <div className="input-block">
           <input
+            required
             type="email"
             name="client_email"
             onChange={handleFormInputChange}
           />
+          <span className="placeholder">Email address:</span>
         </div>
-        <input type="submit" value="ADD CONTACT" />
+        <button className="submit_btn" style={{ margin: '1em 0' }}>
+          {isLoading ? (
+            <span>
+              <UilSpinner size="1.4em" className="spinner-icon" />
+            </span>
+          ) : (
+            'Add contact'
+          )}
+        </button>
       </form>
     </div>
   );

@@ -18,7 +18,12 @@ const UserFeed = () => {
   }, []);
 
   return (
-    <div>
+    <div
+      className="feed-page"
+      style={{
+        background: '#F6F7FB',
+      }}
+    >
       {isModalActive && (
         <ModalBackground
           modalChild={
@@ -31,7 +36,9 @@ const UserFeed = () => {
           }
         />
       )}
-      <h2>For you</h2>
+      <h2 style={{ textAlign: 'left', width: 'fit-content', margin: '0 auto' }}>
+        For you
+      </h2>
       <FeedItemsContainer
         setFileNames={setFileNames}
         fileNames={fileNames}

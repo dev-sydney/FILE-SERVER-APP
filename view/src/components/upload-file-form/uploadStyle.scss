@@ -1,0 +1,30 @@
+.upload-file-modal {
+  padding: 1em;
+  background-color: white;
+  border-radius: 10px;
+
+  box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+  -webkit-box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+  -moz-box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+  p {
+    color: #6d6d6d;
+  }
+  form {
+    margin-right: 0.5em;
+    margin-top: 1em;
+
+    textarea {
+      width: 98%;
+      border-radius: 5px;
+      resize: none;
+      background-color: #d9d9d973;
+      border: none;
+      outline: none;
+      padding: 1em 0.5em;
+    }
+    input[type='submit'] {
+      width: 101%;
+      margin: 0.5em 0;
+    }
+  }
+}

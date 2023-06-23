@@ -1,5 +1,5 @@
-import { useRef, useContext, useEffect } from 'react';
-import { UilUser } from '@iconscout/react-unicons';
+import { useRef, useContext, useEffect, useState } from 'react';
+import { UilImageEdit, UilSpinner } from '@iconscout/react-unicons';
 import { Link } from 'react-router-dom';
 
 import './../pageStyles.scss';
@@ -8,6 +8,8 @@ import userContext from '../../contexts/UserContext';
 const AccountSettings = () => {
   const alertContxt = useContext(alertContext);
   const userContxt = useContext(userContext);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   let formData = useRef(new FormData());
 
@@ -26,6 +28,9 @@ const AccountSettings = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+
+    setIsLoading(true);
+
     fetch('/api/v1/users/account-update', {
       method: 'PATCH',
       body: formData.current,
@@ -33,10 +38,16 @@ const AccountSettings = () => {
       .then((res) => res.json())
       .then((results) => {
         if (results.status === 'success') {
+          setIsLoading(false);
+
           alertContxt.setAlert(results.message, 'Well done');
+
           formData.current = new FormData();
         } else {
+          setIsLoading(false);
+
           formData.current = new FormData();
+
           throw new Error(results.messsage);
         }
       })
@@ -45,23 +56,28 @@ const AccountSettings = () => {
       );
   };
   return (
-    <div className="profile__container">
-      <h1 style={{ textAlign: 'left', margin: '1em 0' }}>Edit Profile</h1>
+    <div className="update-profile-page">
+      <h1 style={{ textAlign: 'left', margin: '1em 1em' }}>Edit Profile</h1>
       <form encType="multipart/form-data" onSubmit={handleFormSubmit}>
         <div
           style={{
-            display: 'flex',
-            alignContent: 'center',
-            justifyContent: 'center',
-            minHeight: 'fit-content',
-            maxHeight: 'fit-content',
-            minWidth: 'fit-content',
-            maxWidth: 'fit-content',
-            borderRadius: '50%',
+            textAlign: 'center',
           }}
         >
-          <label htmlFor="photo" className="file__upload">
-            <UilUser color="#828282" size="60" />
+          <label
+            htmlFor="photo"
+            className="file__upload"
+            style={{ cursor: 'pointer' }}
+          >
+            <UilImageEdit
+              color="#5B89CC"
+              size="5em"
+              style={{
+                padding: '0.5em',
+                borderRadius: '50%',
+                background: '#B3BFDA',
+              }}
+            />
             <input
               type="file"
               name="photo"
@@ -73,6 +89,7 @@ const AccountSettings = () => {
             />
           </label>
         </div>
+        <p style={{ color: 'gray', margin: '0.5em 0' }}>Choose a photo</p>
 
         <div className="input-block">
           <input
@@ -80,8 +97,8 @@ const AccountSettings = () => {
             className="username__input"
             name="user_name"
             onChange={handleFormInputChange}
+            placeholder="username"
           />
-          <span className="placeholder">Username: </span>
         </div>
 
         <div className="input-block">
@@ -90,14 +107,22 @@ const AccountSettings = () => {
             name="emailAddress"
             id="input-text"
             onChange={handleFormInputChange}
+            placeholder="youremail@example.com"
             // required
           />
-          <span className="placeholder">Email:</span>
         </div>
 
-        <button className="save__btn" onClick={handleFormSubmit}>
-          save changes
-        </button>
+        <div style={{ width: '100%', margin: '0.5em 0' }}>
+          <button className="submit_btn" style={{ width: '92%' }}>
+            {isLoading ? (
+              <span>
+                <UilSpinner size="1.4em" className="spinner-icon" />
+              </span>
+            ) : (
+              'save changes'
+            )}
+          </button>
+        </div>
       </form>
       <div style={{ textAlign: 'center', marginTop: '.5em' }}>
         <Link to="/account/overview" style={{ color: 'gray' }}>

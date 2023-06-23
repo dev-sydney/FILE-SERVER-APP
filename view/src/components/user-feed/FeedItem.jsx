@@ -1,6 +1,7 @@
 // import React from 'react'
-import { UilShare } from '@iconscout/react-unicons';
-import getFileThumbNail from '../../../utils/getFileThumbNail';
+import { UilShare, UilImport } from '@iconscout/react-unicons';
+// import getFileThumbNail from '../../../utils/getFileThumbNail';
+import getFileIcon from '../../../utils/getFileIcon';
 import PropTypes from 'prop-types';
 import './feedStyle.scss';
 
@@ -26,7 +27,11 @@ const FeedItem = ({
   };
 
   return (
-    <div>
+    <div
+      style={{
+        display: 'flex',
+      }}
+    >
       {isCheckBoxActive && (
         <div style={{ textAlign: 'left' }}>
           <input
@@ -37,22 +42,39 @@ const FeedItem = ({
           />
         </div>
       )}
-      <div className="feed_item" key={file.file_id}>
-        {getFileThumbNail(file)}
-        <div className="file_details">
-          <div style={{ textAlign: 'right' }}>
-            <UilShare
-              size="1.2em"
-              color="#5575EA"
-              onClick={() => {
-                if (fileNames.includes(file.file_name)) return;
-                setFileNames([...fileNames, file.file_name]);
-                setIsCheckBoxActive(true);
-              }}
-            />
-          </div>
+      <div
+        className="feed_item"
+        key={file.file_id}
+        style={{
+          background: `${
+            fileNames?.includes(file.file_name) ? '#66c46f1c' : ''
+          }`,
+        }}
+      >
+        <div style={{ textAlign: 'right' }} className="flex_1">
+          <UilShare
+            size="1.2em"
+            color="#F98746"
+            onClick={() => {
+              if (fileNames.includes(file.file_name)) return;
+              setFileNames([...fileNames, file.file_name]);
+              setIsCheckBoxActive(true);
+            }}
+            style={{ background: '#ffebaa' }}
+            className="file_icon"
+          />
+          <UilImport
+            size="1.2em"
+            color="#5AAF52"
+            className="file_icon"
+            style={{ background: '#beffb6' }}
+          />
+        </div>
+        <div className="flex_2">
+          <span>{getFileIcon(file)}</span>
+        </div>
+        <div className="file_details flex_3">
           <h2>{file.title}</h2>
-          <button>Download</button>
           <p className="file_description">{file.file_description}</p>
         </div>
       </div>

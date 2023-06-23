@@ -1,6 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
 import FeedItem from '../components/user-feed/FeedItem';
 import userContext from '../contexts/UserContext';
+import { UilSearch, UilUpload } from '@iconscout/react-unicons';
+import ModalBackground from '../components/modal/ModalBackground';
+import ClientListModalWindow from '../components/clients/ClientListModalWindow';
+
 /**
  *
  * @returns The Explore Page Component for searching for files
@@ -9,6 +13,10 @@ const Explore = () => {
   const [searchField, setSearchField] = useState('title');
   const [searchResults, setSearchResults] = useState(null);
   const [typingTimeout, setTypingTimeout] = useState('');
+
+  const [isModalActive, setIsModalActive] = useState(false);
+  const [fileNames, setFileNames] = useState([]);
+  const [isCheckBoxActive, setIsCheckBoxActive] = useState(false);
 
   const userContxt = useContext(userContext);
 
@@ -34,30 +42,87 @@ const Explore = () => {
         )
           .then((res) => res.json())
           .then((results) => setSearchResults(results.searchResults));
+      } else {
+        setSearchResults([]);
       }
     }, 800);
 
     setTypingTimeout(timeout);
   };
   return (
-    <div>
-      <form>
-        <input type="text" name="searchVal" onChange={onChange} />
-        <label htmlFor="">Search by:</label>
-        <select
-          onChange={(e) => {
-            setSearchField(e.target.value);
-          }}
-        >
-          <option value="tile">Title</option>
-          <option value="file_description">Description</option>
-        </select>
-      </form>
-      <div>
+    <div className="explore-page">
+      {isModalActive && (
+        <ModalBackground
+          modalChild={
+            <ClientListModalWindow
+              setIsModalActive={setIsModalActive}
+              fileNames={fileNames.join(',')}
+              setFileNames={setFileNames}
+              setIsCheckBoxActive={setIsCheckBoxActive}
+            />
+          }
+        />
+      )}
+      <span style={{ display: 'flex', margin: '0 auto', padding: '1em' }}>
+        <form className="search-form">
+          <span>
+            <UilSearch
+              color="#9A9A9A"
+              size="1.5em"
+              style={{ margin: 'auto 0' }}
+            />
+          </span>
+          <input type="text" name="searchVal" onChange={onChange} />
+        </form>
+        <span>
+          <select
+            onChange={(e) => {
+              setSearchField(e.target.value);
+            }}
+          >
+            <option>Search by</option>
+            <option value="title">Title</option>
+            <option value="file_description">Description</option>
+          </select>
+        </span>
+      </span>
+
+      <div className="feed_container">
+        <span style={{ minHeight: '2em' }}>
+          {fileNames.length > 0 && (
+            <span className="share_cancel">
+              <button
+                onClick={() => {
+                  setIsModalActive(true);
+                }}
+                className="share_btn"
+              >
+                <UilUpload size="1em" color="white" />
+                <span style={{ marginLeft: '0.4em' }}>Share</span>
+              </button>
+              <button
+                onClick={() => {
+                  setFileNames([]);
+                  setIsCheckBoxActive(false);
+                }}
+                className="cancel-share-btn"
+              >
+                <span>Cancel</span>
+              </button>
+            </span>
+          )}
+        </span>
         {searchResults &&
           (searchResults.length > 0
             ? searchResults.map((file) => (
-                <FeedItem file={file} key={file.file_id} />
+                <FeedItem
+                  file={file}
+                  key={file.file_id}
+                  fileNames={fileNames}
+                  isCheckBoxActive={isCheckBoxActive}
+                  setFileNames={setFileNames}
+                  setIsCheckBoxActive={setIsCheckBoxActive}
+                />
               ))
             : 'No results found :(')}
       </div>

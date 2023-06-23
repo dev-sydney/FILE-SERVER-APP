@@ -1,5 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
-import { UilUserCircle } from '@iconscout/react-unicons';
+import {
+  UilBuilding,
+  UilFileShareAlt,
+  UilFileUploadAlt,
+  UilUsersAlt,
+} from '@iconscout/react-unicons';
+
 import alertContext from '../../contexts/AlertContext';
 
 import './overviewStyle.scss';
@@ -7,6 +13,17 @@ import './overviewStyle.scss';
 const Overview = () => {
   const [overviewItems, setOverviewItems] = useState(null);
   const alertContxt = useContext(alertContext);
+
+  const overviewIcons = [
+    // eslint-disable-next-line react/jsx-key
+    <UilBuilding size="2em" color="white" />,
+    // eslint-disable-next-line react/jsx-key
+    <UilFileShareAlt size="2em" color="white" />,
+    // eslint-disable-next-line react/jsx-key
+    <UilFileUploadAlt size="2em" color="white" />,
+    // eslint-disable-next-line react/jsx-key
+    <UilUsersAlt size="2em" color="white" />,
+  ];
 
   const fieldNames = [
     'Businesses',
@@ -35,14 +52,16 @@ const Overview = () => {
 
   return (
     <div>
-      <h2>Overview</h2>
+      <h2 style={{ textAlign: 'left' }}>Overview</h2>
       <div className="overview_item__container">
         {overviewItems &&
           Object.keys(overviewItems).map((el, i) => (
-            <div key={i} className="overview_item">
-              <UilUserCircle size="2em" color="#5575EA" />
-              <p>{overviewItems[el]}</p>
-              <p>{fieldNames[i]}</p>
+            <div key={i} className={`overview_item item-${i + 1}`}>
+              <span className="flex-1">{overviewIcons[i]}</span>
+              <span className="flex-2">
+                <b>{overviewItems[el]}</b>
+                <p>{fieldNames[i]}</p>
+              </span>
             </div>
           ))}
       </div>

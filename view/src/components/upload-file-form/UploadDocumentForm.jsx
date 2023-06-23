@@ -51,41 +51,62 @@ const UploadDocumentForm = ({ setIsModalActive }) => {
   };
 
   return (
-    <div>
-      {alertMessage && alertMessage}
+    <div className="upload-file-modal">
+      <div style={{ textAlign: 'right' }}>
+        <UilTimes
+          size="2em"
+          className="close-modal-btn"
+          onClick={() => {
+            setIsModalActive(false);
+          }}
+        />
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {alertMessage && (
+          <div className="component-alert">
+            <b>{alertMessage}</b>
+          </div>
+        )}
+      </div>
+
+      <span>
+        <h2 style={{ color: '#121927' }}>Upload a new file!</h2>
+        <p style={{ margin: '0.5em 0' }}>
+          Please enter the fill out the form below to get started.
+        </p>
+      </span>
+
       <form encType="multipart/form-data" onSubmit={onSubmit}>
-        <div>
-          <UilTimes
-            size="2em"
-            color="#5575EA"
-            onClick={() => {
-              setIsModalActive(false);
-            }}
-          />
-        </div>
-        <div className="form_group">
-          <label htmlFor="">Title:</label>
-          <input type="text" name="title" onChange={onChange} />
+        <div className="input-block">
+          <input type="text" name="title" onChange={onChange} required />
+          <span className="placeholder">Title of file:</span>
         </div>
 
-        <div className="form_group">
-          <label htmlFor="">Description:</label>
+        <div className="input-block">
           <textarea
             name="file_description"
             id=""
             cols="30"
             rows="10"
-            placeholder="file description"
+            placeholder="A short description of the file"
             onChange={onChange}
+            required
           ></textarea>
         </div>
 
-        <div className="form_group">
-          <label htmlFor="">File:</label>
-          <input type="file" name="file" id="" onChange={onChange} />
+        <div className="input-block">
+          <input
+            type="file"
+            name="file"
+            id=""
+            onChange={onChange}
+            className="file-input"
+          />
+          <span className="placeholder">File:</span>
         </div>
 
-        <input type="submit" value="UPLOAD" />
+        <input type="submit" value="UPLOAD" className="submit_btn" />
       </form>
     </div>
   );

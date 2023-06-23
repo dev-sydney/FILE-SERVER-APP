@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import './../pageStyles.scss';
 import alertContext from '../../contexts/AlertContext';
 import userContext from '../../contexts/UserContext';
+import { UilSpinner } from '@iconscout/react-unicons';
 
 const UpdatePassword = () => {
   const alertContxt = useContext(alertContext);
   const userContxt = useContext(userContext);
 
   const [formData, setFormData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     userContxt.setNavBarVisibilty(true);
@@ -21,6 +23,9 @@ const UpdatePassword = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+
+    setIsLoading(true);
+
     fetch('/api/v1/users/password-update', {
       method: 'PATCH',
       headers: {
@@ -31,8 +36,10 @@ const UpdatePassword = () => {
       .then((res) => res.json())
       .then((results) => {
         if (results.status === 'success') {
+          setIsLoading(false);
           alertContxt.setAlert(results.message, 'Well done!');
         } else {
+          setIsLoading(false);
           throw new Error(results.message);
         }
       })
@@ -41,9 +48,11 @@ const UpdatePassword = () => {
       );
   };
   return (
-    <div className="change_password__container">
-      <h1 style={{ textAlign: 'left', margin: '1em 0' }}>Security settings</h1>
-      <form onSubmit={handleFormSubmit}>
+    <div className="update-password-page">
+      <h1 style={{ textAlign: 'left', margin: '1em 2em' }}>
+        Security settings
+      </h1>
+      <form onSubmit={handleFormSubmit} className="update-password-form">
         <div className="input-block">
           <input
             onChange={handleFormInputChange}
@@ -71,16 +80,21 @@ const UpdatePassword = () => {
             onChange={handleFormInputChange}
             type="password"
             name="passwordConfirm"
-            id="input-text"
             required
           />
-          <span className="placeholder">Confrim password:</span>
+          <span className="placeholder">Confirm password:</span>
         </div>
-        <input
-          type="submit"
-          value="set new password"
-          className="password_btn"
-        />
+        <div style={{ width: '100%', margin: '0.5em 0' }}>
+          <button className="submit_btn" style={{ width: '92%' }}>
+            {isLoading ? (
+              <span>
+                <UilSpinner size="1.4em" className="spinner-icon" />
+              </span>
+            ) : (
+              'set new password'
+            )}
+          </button>
+        </div>
       </form>
 
       <div style={{ textAlign: 'center', marginTop: '.5em' }}>

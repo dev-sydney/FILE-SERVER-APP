@@ -1,26 +1,27 @@
 .users_table_component {
-  outline: 1px solid lightcoral;
-  border-radius: 10px;
+  border-radius: 5px;
   #usersTable {
-    thead tr {
-      border-bottom: 1px solid gray;
-    }
-    thead tr th {
-      color: rgb(81, 80, 80);
-      padding-bottom: 10px;
-    }
-    tbody tr {
-      // border-bottom: 1px solid darkgray;
-      padding-top: 15px;
-      padding-bottom: 15px;
-      height: 3em;
-    }
-    tbody tr td {
-      padding-left: 5px;
-      padding-right: 5px;
-    }
     .user_td {
       display: flex;
+      padding: 10px;
+      p {
+        margin: auto 0.5em;
+      }
     }
+  }
+  .verification-status {
+    width: fit-content;
+    // font-size: 1.1em;
+    padding: 0.5em 0.5em;
+    border-radius: 5px;
+  }
+
+  .verified {
+    color: #008000;
+    background-color: #96ff96;
+  }
+  .unverified {
+    color: #ffa500;
+    background-color: #ffa60045;
   }
 }

@@ -43,27 +43,29 @@ const AccountVerification = () => {
   };
 
   return (
-    <div>
-      <h1>ENTER CODE</h1>
-      <p>
-        Did you get a verification code? Enter it below and get started now.
-      </p>
-      <PinInput
-        length={6}
-        initialValue={verification_code}
-        secret
-        secretDelay={500}
-        type="numeric"
-        inputMode="number"
-        style={{ padding: '10px' }}
-        inputFocusStyle={{ border: '1px solid blue' }}
-        onComplete={onComplete}
-        autoSelect={true}
-        regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
-      />
-      {responseMessage !== '' && responseMessage}
-      <p>Did not get the code?</p>
-      <b>RESEND CODE</b>
+    <div className="auth-page">
+      <div>
+        <h1>ENTER CODE</h1>
+        <p>
+          Did you get a verification code? Enter it below and get started now.
+        </p>
+        <PinInput
+          length={6}
+          initialValue={verification_code}
+          secret
+          secretDelay={500}
+          type="numeric"
+          inputMode="number"
+          style={{ padding: '10px' }}
+          inputFocusStyle={{ border: '1px solid blue' }}
+          onComplete={onComplete}
+          autoSelect={true}
+          regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
+        />
+        {responseMessage !== '' && responseMessage}
+        <p>Did not get the code?</p>
+        <b>RESEND CODE</b>
+      </div>
     </div>
   );
 };

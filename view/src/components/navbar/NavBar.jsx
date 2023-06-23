@@ -13,17 +13,23 @@ import userContext from '../../contexts/UserContext';
 
 const NavBar = () => {
   const userContxt = useContext(userContext);
+
   return (
     <div
       className={`nav__bar ${!userContxt?.user && 'not-loggedin'}`}
       style={{ display: `${!userContxt.navBarVisibiltyStatus ? 'none' : ''}` }}
     >
+      <h2 style={{ textAlign: 'center' }}>Untitled App</h2>
+      <hr />
       <ul>
         {userContxt.user &&
           (['business'].includes(userContxt.user.privilege) ? (
             <li>
               <NavLink to="/">
-                <UilNewspaper size="2em" color="#7489B3" />
+                <UilNewspaper
+                  size="2em"
+                  style={{ marginTop: 'auto', marginBottom: 'auto' }}
+                />
                 <span style={{ marginLeft: '1em', textAlign: 'left' }}>
                   Home
                 </span>
@@ -38,7 +44,10 @@ const NavBar = () => {
           (['business'].includes(userContxt.user.privilege) ? (
             <li>
               <NavLink to="/explore">
-                <UilSearch size="2em" color="#7489B3" />
+                <UilSearch
+                  size="2em"
+                  style={{ marginTop: 'auto', marginBottom: 'auto' }}
+                />
                 <span style={{ marginLeft: '1em', textAlign: 'left' }}>
                   Search
                 </span>
@@ -53,7 +62,10 @@ const NavBar = () => {
           (['business'].includes(userContxt.user.privilege) ? (
             <li>
               <NavLink to="/user-clients">
-                <UilUsersAlt size="2em" color="#7489B3" />
+                <UilUsersAlt
+                  size="2em"
+                  style={{ marginTop: 'auto', marginBottom: 'auto' }}
+                />
                 <span style={{ marginLeft: '1em' }}>Clients</span>
               </NavLink>
             </li>
@@ -65,7 +77,10 @@ const NavBar = () => {
           (['admin'].includes(userContxt.user.privilege) ? (
             <li>
               <NavLink to="/admin">
-                <UilCreateDashboard size="2em" color="#7489B3" />
+                <UilCreateDashboard
+                  size="2em"
+                  style={{ marginTop: 'auto', marginBottom: 'auto' }}
+                />
                 <span>Dashboard</span>
               </NavLink>
             </li>
@@ -77,9 +92,12 @@ const NavBar = () => {
         {/* NOTE: Conditional rendering logic to the link to the account overview page */}
         {userContxt.user &&
           (['admin', 'business'].includes(userContxt.user.privilege) ? (
-            <li>
+            <li style={{ marginTop: 'auto' }}>
               <NavLink to="/account/overview">
-                <UilUserCircle size="2em" color="#7489B3" />
+                <UilUserCircle
+                  size="2em"
+                  style={{ marginTop: 'auto', marginBottom: 'auto' }}
+                />
                 <span style={{ marginLeft: '1em' }}>Account</span>
               </NavLink>
             </li>
@@ -91,7 +109,10 @@ const NavBar = () => {
           (['admin', 'business'].includes(userContxt.user.privilege) ? (
             <li>
               <NavLink to="/account/profile">
-                <UilSlidersVAlt size="2em" color="#7489B3" />
+                <UilSlidersVAlt
+                  size="2em"
+                  style={{ marginTop: 'auto', marginBottom: 'auto' }}
+                />
                 <span style={{ marginLeft: '1em' }}>Settings</span>
               </NavLink>
             </li>

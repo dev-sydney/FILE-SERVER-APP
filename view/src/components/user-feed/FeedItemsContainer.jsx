@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import FeedItem from './FeedItem';
+import SkeletonFeedItem from './SkeletonFeedItem';
+import { UilUpload } from '@iconscout/react-unicons';
 
 import './feedStyle.scss';
 import alertContext from '../../contexts/AlertContext';
@@ -41,38 +43,46 @@ const FeedItemsContainer = ({
   }, []);
 
   return (
-    <div>
-      {fileNames.length > 0 && (
-        <span>
-          <button
-            onClick={() => {
-              setIsModalActive(true);
-            }}
-          >
-            Share
-          </button>
-          <button
-            onClick={() => {
-              setFileNames([]);
-              setIsCheckBoxActive(false);
-            }}
-          >
-            Cancel
-          </button>
+    <div className="feed_container">
+      <span style={{ minHeight: '2.6em' }}>
+        <span className="share_cancel">
+          {fileNames.length > 0 && (
+            <button
+              onClick={() => {
+                setIsModalActive(true);
+              }}
+              className="share_btn"
+            >
+              <UilUpload size="1.5em" color="white" />
+              <span style={{ marginLeft: '0.4em' }}>Share</span>
+            </button>
+          )}
+          {isCheckBoxActive && (
+            <button
+              onClick={() => {
+                setFileNames([]);
+                setIsCheckBoxActive(false);
+              }}
+              className="cancel-share-btn"
+            >
+              <span>Cancel</span>
+            </button>
+          )}
         </span>
-      )}
+      </span>
 
-      {userFiles &&
-        userFiles.map((file) => (
-          <FeedItem
-            setFileNames={setFileNames}
-            file={file}
-            key={file.file_id}
-            setIsCheckBoxActive={setIsCheckBoxActive}
-            isCheckBoxActive={isCheckBoxActive}
-            fileNames={fileNames}
-          />
-        ))}
+      {userFiles
+        ? userFiles.map((file) => (
+            <FeedItem
+              setFileNames={setFileNames}
+              file={file}
+              key={file.file_id}
+              setIsCheckBoxActive={setIsCheckBoxActive}
+              isCheckBoxActive={isCheckBoxActive}
+              fileNames={fileNames}
+            />
+          ))
+        : [1, 2, 3, 4, 5, 6].map((el) => <SkeletonFeedItem key={el} />)}
     </div>
   );
 };
