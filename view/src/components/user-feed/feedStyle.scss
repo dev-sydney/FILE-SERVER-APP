@@ -6,6 +6,7 @@
   padding: 0.5em 1em;
   display: flex;
   flex-direction: column;
+  transition: 0.3s background;
   margin: 0 1em;
   box-shadow: 0px 2px 5px 0px rgba(186, 179, 179, 0.66);
   -webkit-box-shadow: 0px 2px 5px 0px rgba(186, 179, 179, 0.66);
@@ -14,10 +15,6 @@
   .skeleton-icon {
     width: 1.2em;
     height: 1.2em;
-  }
-
-  .feed_thumbnail {
-    border-radius: 10px;
   }
 
   .file_details {
@@ -31,6 +28,9 @@
       // overflow-y: auto;
       max-height: calc(100% - 2em);
       margin-top: 0.5em;
+    }
+    P {
+      color: gray;
     }
   }
 
@@ -61,6 +61,9 @@
   }
 
   .flex_3 {
+    h2 {
+      color: #1c2840;
+    }
     .skeleton-title {
       min-height: 1em;
       min-width: 50%;

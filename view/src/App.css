@@ -2,6 +2,7 @@
   max-width: 1280px;
   min-height: inherit;
   text-align: center;
+  scroll-behavior: smooth;
 }
 html {
   min-height: 100vh;
@@ -152,17 +153,22 @@ div.input-block input:focus + span.placeholder {
 .update-profile-page,
 .admin-page,
 .all-users-page,
-.users-files-page {
+.users-files-page,
+.test-page {
   background: #f6f7fb;
   width: 100%;
   overflow: hidden;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   display: flex;
   flex-direction: column;
   padding-left: auto;
   padding-right: auto;
   padding: 0.5em 1em;
   border-radius: 10px;
+}
+.feed-page {
+  flex-direction: row;
+  padding: 0.5em 0;
 }
 
 input[type='checkbox'] {
@@ -342,4 +348,11 @@ table tbody tr td {
   to {
     background-position-x: -200%;
   }
+}
+.file-preview {
+  min-width: 98%;
+  max-width: 98%;
+  max-height: 10em;
+  min-height: 6em;
+  border-radius: 10px;
 }
