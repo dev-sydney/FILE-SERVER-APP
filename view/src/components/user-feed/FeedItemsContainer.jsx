@@ -18,6 +18,8 @@ const FeedItemsContainer = ({
   fileNames,
   setIsCheckBoxActive,
   isCheckBoxActive,
+  setIsPreviewPaneActive,
+  setSelectedPreviewFile,
 }) => {
   const alertContxt = useContext(alertContext);
 
@@ -25,7 +27,7 @@ const FeedItemsContainer = ({
 
   useEffect(() => {
     fetch(
-      '/api/v1/files/?fields=title,file_description,file_id,file_type,file_name&file_status=1&sort=created_at:desc'
+      '/api/v1/files/?fields=title,file_description,file_id,file_type,file_name,created_at&file_status=1&sort=created_at:desc'
     )
       .then((res) => res.json())
       .then((results) => {
@@ -44,6 +46,7 @@ const FeedItemsContainer = ({
 
   return (
     <div className="feed_container">
+      <h2 style={{ textAlign: 'left', marginLeft: '0.5em' }}>For You</h2>
       <span style={{ minHeight: '2.6em' }}>
         <span className="share_cancel">
           {fileNames.length > 0 && (
@@ -80,6 +83,8 @@ const FeedItemsContainer = ({
               setIsCheckBoxActive={setIsCheckBoxActive}
               isCheckBoxActive={isCheckBoxActive}
               fileNames={fileNames}
+              setIsPreviewPaneActive={setIsPreviewPaneActive}
+              setSelectedPreviewFile={setSelectedPreviewFile}
             />
           ))
         : [1, 2, 3, 4, 5, 6].map((el) => <SkeletonFeedItem key={el} />)}
@@ -92,7 +97,9 @@ FeedItemsContainer.propTypes = {
   isCheckBoxActive: PropTypes.bool,
   setIsCheckBoxActive: PropTypes.func,
   setIsModalActive: PropTypes.func,
+  setIsPreviewPaneActive: PropTypes.func,
   setFileNames: PropTypes.func,
+  setSelectedPreviewFile: PropTypes.func,
 };
 
 export default FeedItemsContainer;

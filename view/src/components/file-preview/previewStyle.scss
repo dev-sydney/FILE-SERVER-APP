@@ -1,0 +1,61 @@
+.file-preview-pane {
+  background-color: white;
+  min-height: 97%;
+  max-height: 97%;
+  display: flex;
+  flex-direction: column;
+  align-items: space-around;
+  transition: 0.3s all;
+  overflow: hidden;
+  margin: auto 0;
+  margin-right: 0.5em;
+  align-items: space-around;
+  text-align: left;
+  row-gap: 1.5em;
+  .preview-pane__close {
+    padding: 0 1em;
+    margin-top: 0.4em;
+  }
+  .preview-pane__thumbnail {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+  }
+  .preview-pane__filename {
+    padding: 0 1em;
+  }
+  .preview-pane__description {
+    border-top: 1px solid lightgray;
+    padding: 0 1em;
+    h3 {
+      margin: 0.3em 0;
+    }
+    p {
+      color: gray;
+      //  color: #5b85db17
+    }
+  }
+  .preview-pane__properties {
+    border-top: 1px solid lightgray;
+    // margin-bottom: 0.5em;
+    padding: 0 1em;
+    span {
+      margin: 0.3em 0;
+    }
+  }
+  .preview-pdf {
+    box-shadow: 0px 10px 14px -3px rgba(0, 0, 0, 0.1);
+    outline: 1px solid lightgray;
+    border-radius: 10px;
+  }
+}
+.show-pane {
+  min-width: 30%;
+  max-width: 30%;
+  padding: 0 0.5em;
+}
+
+.hide-pane {
+  min-width: 0em;
+  max-width: 0em;
+}

@@ -16,6 +16,8 @@ const FeedItem = ({
   isCheckBoxActive,
   setIsCheckBoxActive,
   fileNames,
+  setIsPreviewPaneActive,
+  setSelectedPreviewFile,
 }) => {
   const handleCheckBoxChange = (e) => {
     const { value } = e.target;
@@ -47,7 +49,7 @@ const FeedItem = ({
         key={file.file_id}
         style={{
           background: `${
-            fileNames?.includes(file.file_name) ? '#66c46f1c' : ''
+            fileNames?.includes(file.file_name) ? '#5b85db17' : ''
           }`,
         }}
       >
@@ -71,7 +73,14 @@ const FeedItem = ({
           />
         </div>
         <div className="flex_2">
-          <span>{getFileIcon(file)}</span>
+          <span
+            onClick={() => {
+              setSelectedPreviewFile(file);
+              setIsPreviewPaneActive(true);
+            }}
+          >
+            {getFileIcon(file)}
+          </span>
         </div>
         <div className="file_details flex_3">
           <h2>{file.title}</h2>
@@ -86,6 +95,8 @@ FeedItem.propTypes = {
   fileNames: PropTypes.any,
   setFileNames: PropTypes.func,
   setIsCheckBoxActive: PropTypes.func,
+  setSelectedPreviewFile: PropTypes.func,
+  setIsPreviewPaneActive: PropTypes.func,
   isCheckBoxActive: PropTypes.bool,
 };
 export default FeedItem;

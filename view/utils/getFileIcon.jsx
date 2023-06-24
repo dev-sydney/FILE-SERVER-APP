@@ -91,7 +91,7 @@ const getFileIcon = (file) => {
           size="2em"
           className="file_icon"
           color="#D61A1A"
-          style={{ backgroundColor: getColorShade('#D61A1A', 170) }}
+          style={{ backgroundColor: getColorShade('#D61A1A', 200) }}
         />
       );
 

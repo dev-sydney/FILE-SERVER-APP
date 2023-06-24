@@ -1,58 +1,53 @@
+import { Document, Page, pdfjs } from 'react-pdf';
+
 /**
- * Handles the logic to render out either a small preview of a file(for only images) or
- * some other placeholder image for pdf,video & audo files
+ * Handles the logic to render out  a small preview of a fileor
+ * some other placeholder for unsupported media
  * @param {Object} file The File data
  * @returns
  */
-const getFileThumbNail = (file) => {
-  switch (file.file_type.split('/')[0]) {
+const GetFileThumbNail = (file) => {
+  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.js',
+    import.meta.url
+  ).toString();
+
+  switch (file?.file_type.split('/')[0]) {
     case 'image':
       return (
-        <a href={`/files/${file.file_name}`} target="_blank" rel="noreferrer">
-          <img
-            className="feed_thumbnail"
-            src={`/files/${file.file_name}`}
-            alt="file thumbnail"
-          />
-        </a>
+        <img
+          className="file-preview"
+          src={`/files/${file.file_name}`}
+          alt="file"
+        />
       );
 
     case 'application':
       return (
-        <a
-          href={`/files/${file.file_name}`}
-          target="_blank"
-          rel="noreferrer"
-          style={{ outline: '1px solid blue' }}
-        >
-          <img
-            // className="feed_thumbnail"
-            src={`/img/thumbnails/pdf-thumbnail.png`}
-            alt="file thumbnail"
-            role="presentation"
-            style={{ width: '100%', height: '100%' }}
+        <Document file={`/files/${file?.file_name}`} className={'preview-pdf'}>
+          <Page
+            renderAnnotationLayer={false}
+            renderTextLayer={false}
+            render
+            height={200}
           />
-        </a>
+        </Document>
       );
 
     case 'video':
       return (
-        <a href={`/files/${file.file_name}`} target="_blank" rel="noreferrer">
-          <img
-            src={`/img/thumbnails/Play-Button-thumbnail.png`}
-            // className="feed_thumbnail"
-            alt="file thumbnail"
-            role="presentation"
-            style={{ width: '100%', height: '100%' }}
-          />
-        </a>
+        <video controls playsInline={true} className="file-preview">
+          <source src={`/files/${file?.file_name}`} type={file?.file_type} />
+          <p>
+            Your browser does not support HTML video. Here is a
+            <a href={`/files/${file?.file_name}`}>link to the video</a> instead.
+          </p>
+        </video>
       );
 
-    // case 'txt':
-    //   return <UilAlignJustify size="2em" color="#5575EA" />;
     default:
       return <div></div>;
   }
 };
 
-export default getFileThumbNail;
+export default GetFileThumbNail;
