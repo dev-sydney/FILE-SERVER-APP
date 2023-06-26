@@ -30,6 +30,7 @@ const GetFileThumbNail = (file) => {
             renderTextLayer={false}
             render
             height={200}
+            pageNumber={1}
           />
         </Document>
       );

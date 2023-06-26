@@ -356,3 +356,34 @@ table tbody tr td {
   min-height: 6em;
   border-radius: 10px;
 }
+.tooltip-icon {
+  position: relative;
+}
+.tooltipText {
+  position: absolute;
+  left: 50%;
+  top: -20px;
+  transform: translateX(-50%);
+  background-color: #121927;
+  color: #fff;
+  white-space: nowrap;
+  padding: 10px 13px;
+  border-radius: 5px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.tooltipText::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border: 10px solid;
+  border-color: #000 #0000 #0000 #0000;
+}
+.tooltip-icon:hover .tooltipText {
+  top: -50px;
+  visibility: visible;
+  opacity: 1;
+}

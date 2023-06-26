@@ -1,6 +1,6 @@
-// import React from 'react'
+import { useContext } from 'react';
 import { UilShare, UilImport } from '@iconscout/react-unicons';
-// import getFileThumbNail from '../../../utils/getFileThumbNail';
+import alertContext from '../../contexts/AlertContext';
 import getFileIcon from '../../../utils/getFileIcon';
 import PropTypes from 'prop-types';
 import './feedStyle.scss';
@@ -19,6 +19,8 @@ const FeedItem = ({
   setIsPreviewPaneActive,
   setSelectedPreviewFile,
 }) => {
+  const alertContxt = useContext(alertContext);
+
   const handleCheckBoxChange = (e) => {
     const { value } = e.target;
     if (e.target.checked) {
@@ -26,6 +28,23 @@ const FeedItem = ({
     } else {
       setFileNames(fileNames.filter((curFileName) => curFileName !== value));
     }
+  };
+
+  const handleOnDownloadClick = () => {
+    fetch(
+      `/api/v1/files/fileDownloads/${file.file_id}/?file_name=${file.file_name}`,
+      {
+        method: 'POST',
+      }
+    )
+      .then((res) => res.blob())
+      .then((data) => {
+        let a = document.createElement('a');
+        a.href = window.URL.createObjectURL(data);
+        a.download = file.file_name;
+        a.click();
+      })
+      .catch((err) => alertContxt.setAlert(err.message, 'Error'));
   };
 
   return (
@@ -54,31 +73,40 @@ const FeedItem = ({
         }}
       >
         <div style={{ textAlign: 'right' }} className="flex_1">
-          <UilShare
-            size="1.2em"
-            color="#F98746"
-            onClick={() => {
-              if (fileNames.includes(file.file_name)) return;
-              setFileNames([...fileNames, file.file_name]);
-              setIsCheckBoxActive(true);
-            }}
-            style={{ background: '#ffebaa' }}
-            className="file_icon"
-          />
-          <UilImport
-            size="1.2em"
-            color="#5AAF52"
-            className="file_icon"
-            style={{ background: '#beffb6' }}
-          />
+          <span className="tooltip-icon">
+            <span className="tooltipText">Share</span>
+            <UilShare
+              size="1.2em"
+              color="#F98746"
+              onClick={() => {
+                if (fileNames.includes(file.file_name)) return;
+                setFileNames([...fileNames, file.file_name]);
+                setIsCheckBoxActive(true);
+              }}
+              style={{ background: '#ffebaa' }}
+              className="file_icon"
+            />
+          </span>
+          <span className="tooltip-icon">
+            <span className="tooltipText">Download</span>
+            <UilImport
+              size="1.2em"
+              color="#5AAF52"
+              className="file_icon"
+              style={{ background: '#beffb6' }}
+              onClick={handleOnDownloadClick}
+            />
+          </span>
         </div>
         <div className="flex_2">
           <span
+            className="tooltip-icon"
             onClick={() => {
               setSelectedPreviewFile(file);
               setIsPreviewPaneActive(true);
             }}
           >
+            <span className="tooltipText">Preview</span>
             {getFileIcon(file)}
           </span>
         </div>

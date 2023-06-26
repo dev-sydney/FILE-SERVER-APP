@@ -3,7 +3,7 @@ const multer = require('multer');
 const catchAsyncError = require('./../utils/catchAsyncError');
 const GlobalAppError = require('./../utils/GlobalAppError');
 const APIFeatures = require('../utils/APIFeatures');
-
+const path = require('path');
 const pool = require('./../model/database');
 
 const multerStorage = multer.diskStorage({
@@ -212,7 +212,7 @@ exports.getOverview = catchAsyncError(async (req, res, next) => {
 });
 
 exports.createFileDownload = catchAsyncError(async (req, res, next) => {
-  if (!req.params.file_id)
+  if (!req.params.file_id || !req.query.file_name)
     return next(
       new GlobalAppError(
         'No file was selected, please select one & try again',
@@ -220,21 +220,26 @@ exports.createFileDownload = catchAsyncError(async (req, res, next) => {
       )
     );
 
-  const [insertCommandResults] = await pool.query(
-    `INSERT INTO FileDownloads(file_id,user_id) VALUES (?,?)`,
-    [+req.params.file_id, req.user.user_id]
+  res.download(
+    `${__dirname}/../view/public/files/${req.query.file_name}`,
+    async (err) => {
+      if (err) {
+        console.log(err);
+        return next(
+          new GlobalAppError(
+            'Trouble downloading the file, please try again.',
+            400
+          )
+        );
+      } else {
+        const [insertCommandResults] = await pool.query(
+          `INSERT INTO FileDownloads(file_id,user_id) VALUES (?,?)`,
+          [+req.params.file_id, req.user.user_id]
+        );
+        if (insertCommandResults.insertId) console.log('Download recorded');
+      }
+    }
   );
-
-  if (insertCommandResults.insertId) {
-    res.status(201).json({
-      status: 'success',
-      message: 'File downloaded successfully',
-    });
-  } else {
-    return next(
-      new GlobalAppError('Trouble downloading the file, please try again.', 400)
-    );
-  }
 });
 /**
  * Middleware function to handle requests to search for a file

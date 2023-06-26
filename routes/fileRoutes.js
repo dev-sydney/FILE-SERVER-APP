@@ -47,4 +47,11 @@ router
     filesController.searchFiles
   );
 
+router
+  .route('/fileDownloads/:file_id')
+  .post(
+    authController.restrictAccessTo('business'),
+    filesController.createFileDownload
+  );
+
 module.exports = router;
