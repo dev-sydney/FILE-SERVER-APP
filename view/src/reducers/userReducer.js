@@ -7,11 +7,10 @@ const userReducer = (state, action) => {
       };
     case 'SIGN_IN_USER':
       localStorage.removeItem('DDS_USER');
-      localStorage.setItem('DDS_USER', JSON.stringify(action.payload));
       return {
         ...state,
         isLoading: false,
-        user: action.payload,
+        userAlert: action.payload,
       };
     case 'SIGN_IN_ERROR':
       localStorage.removeItem('DDS_USER');

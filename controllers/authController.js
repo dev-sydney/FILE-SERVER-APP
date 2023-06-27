@@ -72,7 +72,7 @@ const createSendAuthToken = (
  */
 exports.loginUser = catchAsyncError(async (req, res, next) => {
   const [result] = await pool.query(
-    'SELECT * FROM Users WHERE email_address=?',
+    'SELECT user_id,user_password FROM Users WHERE email_address=?',
     [req.body.emailAddress]
   );
 
@@ -86,7 +86,53 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
     );
   }
 
-  createSendAuthToken(user, 200, req, res);
+  //TODO:
+  // 1.Prepare the verification code
+  const verificationCode = Math.floor(
+    Math.random() * (999999 - 100000) + 100000
+  ).toString();
+
+  //2. Encrypt the verification code
+  let encryptedVerificationCode = crypto
+    .createHash('sha256')
+    .update(verificationCode)
+    .digest('hex');
+
+  //3. Set the expiry time for the verification code
+  let verificationCodeExipresAt = new Date(Date.now() + 10 * 60 * 1000); //user gets 10 mins to verify their account
+
+  //4. Update the verification_code,verification_expires_at fields of the record in the DB
+  const [updateCommandResult] = await pool.query(
+    'UPDATE Users SET verification_code = ?, verification_expires_at = ? WHERE user_id = ?',
+    [encryptedVerificationCode, verificationCodeExipresAt, +user.user_id]
+  );
+  if (updateCommandResult.affectedRows !== 1)
+    return next(
+      new GlobalAppError('Trouble sending the verification code', 400)
+    );
+
+  //5. send the email to the user
+  const verificationURL = `http://127.0.0.1:5173/account-verification/`;
+
+  const emailFrom = `Lizzy from DDS ${process.env.MAIL_FROM}`;
+
+  try {
+    await new Email(
+      null,
+      verificationURL,
+      emailFrom,
+      req.body.emailAddress
+    ).sendAccountVerificationMail(verificationCode);
+
+    res.status(200).json({
+      message: "We've sent you a verification code, please check your inbox",
+    });
+  } catch (err) {
+    console.log(err);
+    return next(
+      new GlobalAppError('Error sending Email, please try again...', 500)
+    );
+  }
 });
 
 /**

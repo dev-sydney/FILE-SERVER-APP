@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useContext, useEffect } from 'react';
 import userContext from '../../contexts/UserContext';
-import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { UilSpinner, UilInfoCircle } from '@iconscout/react-unicons';
@@ -14,7 +13,6 @@ import './login-signup-style.scss';
  */
 const Login = () => {
   const userContxt = useContext(userContext);
-  const navigateTo = useNavigate();
   const [formData, setFormData] = useState({});
 
   const onChange = (e) => {
@@ -29,7 +27,7 @@ const Login = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          userContxt.loginUser(formData, navigateTo);
+          userContxt.loginUser(formData);
         }}
         style={{ display: 'flex', flexDirection: 'column' }}
       >
