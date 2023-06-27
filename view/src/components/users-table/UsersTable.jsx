@@ -88,7 +88,9 @@ const UsersTable = ({ numResults }) => {
     </div>
   );
 };
+
 UsersTable.propTypes = {
   numResults: PropTypes.number,
 };
+
 export default UsersTable;

@@ -23,6 +23,7 @@ const AlertToast = () => {
           onClick={() => {
             alertContxt.clearAlert();
           }}
+          className="submit_btn"
         >
           cancel
         </button>

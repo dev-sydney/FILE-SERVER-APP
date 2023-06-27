@@ -24,8 +24,10 @@ const FeedItemsContainer = ({
   const alertContxt = useContext(alertContext);
 
   const [userFiles, setUserFiles] = useState(null);
+  const [isLoading, setIsLoading] = useState(null);
 
   useEffect(() => {
+    setIsLoading(true);
     fetch(
       '/api/v1/files/?fields=title,file_description,file_id,file_type,file_name,created_at&file_status=1&sort=created_at:desc'
     )
@@ -33,6 +35,7 @@ const FeedItemsContainer = ({
       .then((results) => {
         if (results.status === 'success') {
           setUserFiles(results.files);
+          setIsLoading(false);
         } else {
           throw new Error(results.message);
         }
@@ -73,21 +76,24 @@ const FeedItemsContainer = ({
           )}
         </span>
       </span>
-
-      {userFiles
-        ? userFiles.map((file) => (
-            <FeedItem
-              setFileNames={setFileNames}
-              file={file}
-              key={file.file_id}
-              setIsCheckBoxActive={setIsCheckBoxActive}
-              isCheckBoxActive={isCheckBoxActive}
-              fileNames={fileNames}
-              setIsPreviewPaneActive={setIsPreviewPaneActive}
-              setSelectedPreviewFile={setSelectedPreviewFile}
-            />
-          ))
-        : [1, 2, 3, 4, 5, 6].map((el) => <SkeletonFeedItem key={el} />)}
+      {isLoading ? (
+        [1, 2, 3, 4, 5, 6].map((el) => <SkeletonFeedItem key={el} />)
+      ) : userFiles?.length === 0 ? (
+        <p>Sorry , there are no files available for you yet</p>
+      ) : (
+        userFiles?.map((file) => (
+          <FeedItem
+            setFileNames={setFileNames}
+            file={file}
+            key={file.file_id}
+            setIsCheckBoxActive={setIsCheckBoxActive}
+            isCheckBoxActive={isCheckBoxActive}
+            fileNames={fileNames}
+            setIsPreviewPaneActive={setIsPreviewPaneActive}
+            setSelectedPreviewFile={setSelectedPreviewFile}
+          />
+        ))
+      )}
     </div>
   );
 };

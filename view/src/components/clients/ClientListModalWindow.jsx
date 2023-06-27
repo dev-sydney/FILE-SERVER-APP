@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { UilTimes, UilSpinner, UilPlusCircle } from '@iconscout/react-unicons';
+import {
+  UilTimes,
+  UilPlusCircle,
+  UilInfoCircle,
+} from '@iconscout/react-unicons';
 import SkeletonClientItem from './SkeletonClientItem';
 
 import './clientStyle.scss';
@@ -145,7 +149,9 @@ const ClientListModalWindow = ({
         {/* NOTE: Conditional rendering logic of the component to display an error message incase they was trouble getting the client's contacts*/}
         {errorMessage && (
           <div className="component-alert">
-            <b>{errorMessage}</b>
+            <UilInfoCircle size="1.5em" style={{ margin: 'auto 0.5em' }} />
+
+            <b style={{ margin: 'auto 0' }}>{errorMessage}</b>
           </div>
         )}
       </div>
@@ -154,7 +160,9 @@ const ClientListModalWindow = ({
         {/* NOTE: Conditional rendering logic, of the component to display an alert message after attempting to share a file */}
         {alertMessage && (
           <div className="component-alert">
-            <b>{alertMessage}</b>
+            <UilInfoCircle size="1.5em" style={{ margin: 'auto 0.5em' }} />
+
+            <b style={{ margin: 'auto 0' }}>{alertMessage}</b>
           </div>
         )}
       </div>
@@ -177,13 +185,7 @@ const ClientListModalWindow = ({
           </div>
 
           <button className="submit_btn email-submit">
-            {isLoading ? (
-              <span>
-                <UilSpinner size="1.5em" className="spinner-icon" />
-              </span>
-            ) : (
-              'Send'
-            )}
+            {isLoading ? 'Sending...' : 'Send'}
           </button>
         </form>
       </div>

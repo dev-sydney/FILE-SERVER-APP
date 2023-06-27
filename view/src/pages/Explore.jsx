@@ -4,6 +4,7 @@ import userContext from '../contexts/UserContext';
 import { UilSearch, UilUpload } from '@iconscout/react-unicons';
 import ModalBackground from '../components/modal/ModalBackground';
 import ClientListModalWindow from '../components/clients/ClientListModalWindow';
+import FilePreviewPane from '../components/file-preview/FilePreviewPane';
 
 /**
  *
@@ -17,6 +18,9 @@ const Explore = () => {
   const [isModalActive, setIsModalActive] = useState(false);
   const [fileNames, setFileNames] = useState([]);
   const [isCheckBoxActive, setIsCheckBoxActive] = useState(false);
+
+  const [isPreviewPaneActive, setIsPreviewPaneActive] = useState(false);
+  const [selectedPreviewFile, setSelectedPreviewFile] = useState(null);
 
   const userContxt = useContext(userContext);
 
@@ -63,31 +67,31 @@ const Explore = () => {
           }
         />
       )}
-      <span style={{ display: 'flex', margin: '0 auto', padding: '1em' }}>
-        <form className="search-form">
-          <span>
-            <UilSearch
-              color="#9A9A9A"
-              size="1.5em"
-              style={{ margin: 'auto 0' }}
-            />
-          </span>
-          <input type="text" name="searchVal" onChange={onChange} />
-        </form>
-        <span>
-          <select
-            onChange={(e) => {
-              setSearchField(e.target.value);
-            }}
-          >
-            <option>Search by</option>
-            <option value="title">Title</option>
-            <option value="file_description">Description</option>
-          </select>
-        </span>
-      </span>
 
       <div className="feed_container">
+        <span style={{ display: 'flex', margin: '0 auto', padding: '1em' }}>
+          <form className="search-form">
+            <span>
+              <UilSearch
+                color="#9A9A9A"
+                size="1.5em"
+                style={{ margin: 'auto 0' }}
+              />
+            </span>
+            <input type="text" name="searchVal" onChange={onChange} />
+          </form>
+          <span>
+            <select
+              onChange={(e) => {
+                setSearchField(e.target.value);
+              }}
+            >
+              <option>Search by</option>
+              <option value="title">Title</option>
+              <option value="file_description">Description</option>
+            </select>
+          </span>
+        </span>
         <span style={{ minHeight: '2em' }}>
           {fileNames.length > 0 && (
             <span className="share_cancel">
@@ -122,10 +126,18 @@ const Explore = () => {
                   isCheckBoxActive={isCheckBoxActive}
                   setFileNames={setFileNames}
                   setIsCheckBoxActive={setIsCheckBoxActive}
+                  setIsPreviewPaneActive={setIsPreviewPaneActive}
+                  setSelectedPreviewFile={setSelectedPreviewFile}
                 />
               ))
             : 'No results found :(')}
       </div>
+      <FilePreviewPane
+        isPreviewPaneActive={isPreviewPaneActive}
+        setIsPreviewPaneActive={setIsPreviewPaneActive}
+        file={selectedPreviewFile}
+        setSelectedPreviewFile={setSelectedPreviewFile}
+      />
     </div>
   );
 };

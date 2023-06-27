@@ -11,10 +11,13 @@
   padding: 0.7em;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
+  color: white;
+
   .flex_2,
   .flex_3 {
     text-align: left;
   }
+  background-color: #121927a0;
 }
 .hide_toast {
   transform: translateY(100%);

@@ -13,6 +13,12 @@ const userReducer = (state, action) => {
         isLoading: false,
         user: action.payload,
       };
+    case 'SIGN_IN_ERROR':
+      localStorage.removeItem('DDS_USER');
+      return {
+        ...state,
+        userAlert: action.payload,
+      };
 
     case 'SIGN_UP':
       localStorage.removeItem('DDS_USER');
@@ -30,12 +36,12 @@ const userReducer = (state, action) => {
     case 'SIGN_OUT_ERROR':
       return {
         ...state,
-        userALert: action.payload,
+        userAlert: action.payload,
       };
     case 'CLEAR_USER_ALERT':
       return {
         ...state,
-        userALert: null,
+        userAlert: null,
       };
 
     case 'SET_USER_POST_VERIFICATION':

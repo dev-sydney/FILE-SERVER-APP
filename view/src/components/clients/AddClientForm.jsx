@@ -1,11 +1,15 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState } from 'react';
-import { UilTimes, UilSpinner } from '@iconscout/react-unicons';
+import { UilTimes, UilSpinner, UilInfoCircle } from '@iconscout/react-unicons';
 import PropTypes from 'prop-types';
 import './clientStyle.scss';
 
 const AddClientForm = ({ setIsFormModalActive }) => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    client_first_name: '',
+    client_last_name: '',
+    client_email: '',
+  });
   const [alertMessage, setAlertMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,6 +34,11 @@ const AddClientForm = ({ setIsFormModalActive }) => {
         if (results.status === 'success') {
           setIsLoading(false);
           setAlertMessage(results.message);
+          setFormData({
+            client_first_name: '',
+            client_last_name: '',
+            client_email: '',
+          });
           setTimeout(() => {
             setAlertMessage(null);
           }, 1000);
@@ -56,7 +65,8 @@ const AddClientForm = ({ setIsFormModalActive }) => {
         {/* NOTE: Conditional rendering logic, of the component to display an alert message after attempting to share a file */}
         {alertMessage && (
           <div className="component-alert">
-            <b>{alertMessage}</b>
+            <UilInfoCircle size="1.5em" style={{ margin: 'auto 0.5em' }} />
+            <b style={{ margin: 'auto 0' }}>{alertMessage}</b>
           </div>
         )}
       </div>
@@ -70,6 +80,7 @@ const AddClientForm = ({ setIsFormModalActive }) => {
             required
             type="text"
             name="client_first_name"
+            value={formData.client_first_name}
             onChange={handleFormInputChange}
           />
           <span className="placeholder">First name:</span>
@@ -79,6 +90,7 @@ const AddClientForm = ({ setIsFormModalActive }) => {
             required
             type="text"
             name="client_last_name"
+            value={formData.client_last_name}
             onChange={handleFormInputChange}
           />
           <span className="placeholder">Last name:</span>
@@ -88,6 +100,7 @@ const AddClientForm = ({ setIsFormModalActive }) => {
             required
             type="email"
             name="client_email"
+            value={formData.client_email}
             onChange={handleFormInputChange}
           />
           <span className="placeholder">Email address:</span>

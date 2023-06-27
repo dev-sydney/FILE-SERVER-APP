@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { UilTimes } from '@iconscout/react-unicons';
+import { UilTimes, UilInfoCircle } from '@iconscout/react-unicons';
 import PropTypes from 'prop-types';
 
 import './uploadStyle.scss';
@@ -65,7 +65,9 @@ const UploadDocumentForm = ({ setIsModalActive }) => {
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         {alertMessage && (
           <div className="component-alert">
-            <b>{alertMessage}</b>
+            <UilInfoCircle size="1.5em" style={{ margin: 'auto 0.5em' }} />
+
+            <b style={{ margin: 'auto 0' }}>{alertMessage}</b>
           </div>
         )}
       </div>

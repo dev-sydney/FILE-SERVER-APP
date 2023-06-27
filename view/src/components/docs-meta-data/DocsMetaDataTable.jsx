@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import getFileIcon from '../../../utils/getFileIcon';
 import alertContext from '../../contexts/AlertContext';
+import { UilSpinner } from '@iconscout/react-unicons';
+
 import {
   UilArrowUp,
   UilClockThree,
@@ -12,13 +14,17 @@ const DocsMetaDataTable = ({ user_id, isModalActive }) => {
   const alertContxt = useContext(alertContext);
 
   const [userFilesData, setUserFilesData] = useState(null);
+  const [isLoading, setIsLoading] = useState(null);
 
   useEffect(() => {
+    setIsLoading(true);
+
     fetch(`/api/v1/files/businesses/${user_id}`)
       .then((res) => res.json())
       .then((results) => {
         if (results.status === 'success') {
           setUserFilesData(results.businessFiles);
+          setIsLoading(false);
         } else {
           throw new Error(results.message);
         }
@@ -33,47 +39,56 @@ const DocsMetaDataTable = ({ user_id, isModalActive }) => {
   const thLabel = { margin: 'auto 0.5em' };
   return (
     <div>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>
-              <span style={{ display: 'flex' }}>
-                <span style={thLabel}>File name</span>
-                <span style={iconStyle}>
-                  <UilArrowUp color="#B3B3B3" size="1.5em" />
+      {isLoading ? (
+        <UilSpinner
+          size="2.5em"
+          color="#121927"
+          className="spinner-icon"
+          style={{ margin: '0 auto' }}
+        />
+      ) : userFilesData?.length === 0 ? (
+        <p>No files uploaded for this user yet</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>
+                <span style={{ display: 'flex' }}>
+                  <span style={thLabel}>File name</span>
+                  <span style={iconStyle}>
+                    <UilArrowUp color="#121927" size="1.5em" />
+                  </span>
                 </span>
-              </span>
-            </th>
-            <th>
-              <span style={{ display: 'flex' }}>
-                <span style={thLabel}>Uploaded on</span>
-                <span style={iconStyle}>
-                  <UilClockThree color="#B3B3B3" size="1.5em" />
+              </th>
+              <th>
+                <span style={{ display: 'flex' }}>
+                  <span style={thLabel}>Uploaded on</span>
+                  <span style={iconStyle}>
+                    <UilClockThree color="#121927" size="1.5em" />
+                  </span>
                 </span>
-              </span>
-            </th>
-            <th>
-              <span style={{ display: 'flex' }}>
-                <span style={thLabel}>Shares</span>
-                <span style={iconStyle}>
-                  <UilShare color="#B3B3B3" size="1.5em" />
+              </th>
+              <th>
+                <span style={{ display: 'flex' }}>
+                  <span style={thLabel}>Shares</span>
+                  <span style={iconStyle}>
+                    <UilShare color="#121927" size="1.5em" />
+                  </span>
                 </span>
-              </span>
-            </th>
-            <th>
-              <span style={{ display: 'flex' }}>
-                <span style={thLabel}>Downloads</span>
-                <span style={iconStyle}>
-                  <UilImport color="#B3B3B3" size="1.5em" />
+              </th>
+              <th>
+                <span style={{ display: 'flex' }}>
+                  <span style={thLabel}>Downloads</span>
+                  <span style={iconStyle}>
+                    <UilImport color="#121927" size="1.5em" />
+                  </span>
                 </span>
-              </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {userFilesData &&
-            userFilesData.map((fileData, i) => (
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {userFilesData?.map((fileData, i) => (
               <tr key={i}>
                 <td>{i + 1}</td>
                 <td>
@@ -91,8 +106,9 @@ const DocsMetaDataTable = ({ user_id, isModalActive }) => {
                 </td>
               </tr>
             ))}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

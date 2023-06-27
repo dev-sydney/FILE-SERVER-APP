@@ -15,17 +15,21 @@ const Admin = () => {
 
   return (
     <div className="admin-page">
-      <div
-        style={{
-          outline: '1px solid lightblue',
-          height: '6em',
-          borderRadius: '5px',
-          margin: '0.5em 0.5em',
-        }}
-      ></div>
+      <div className="welcome-user-card">
+        <span style={{ textAlign: 'left', margin: 'auto 2%' }}>
+          <h1>Hey there, Admin</h1>
+          <p>Ready to start your day with a brief over sight?</p>
+        </span>
+        <span style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+          <img
+            src="/img/hello-admin-removebg-preview.png"
+            style={{ height: '10em' }}
+          />
+        </span>
+      </div>
       <Overview />
       <span style={{ display: 'flex' }}>
-        <h2 style={{ textAlign: 'left' }}>Users</h2>
+        <h3 style={{ textAlign: 'left' }}>Users</h3>
         <Link
           to="/admin/users"
           style={{ marginLeft: 'auto', marginRight: '0.5em' }}

@@ -16,13 +16,13 @@ const Overview = () => {
 
   const overviewIcons = [
     // eslint-disable-next-line react/jsx-key
-    <UilBuilding size="2em" color="white" />,
+    <UilBuilding size="2em" className="overview-board-icon" />,
     // eslint-disable-next-line react/jsx-key
-    <UilFileShareAlt size="2em" color="white" />,
+    <UilFileShareAlt size="2em" className="overview-board-icon" />,
     // eslint-disable-next-line react/jsx-key
-    <UilFileUploadAlt size="2em" color="white" />,
+    <UilFileUploadAlt size="2em" className="overview-board-icon" />,
     // eslint-disable-next-line react/jsx-key
-    <UilUsersAlt size="2em" color="white" />,
+    <UilUsersAlt size="2em" className="overview-board-icon" />,
   ];
 
   const fieldNames = [
@@ -52,7 +52,7 @@ const Overview = () => {
 
   return (
     <div>
-      <h2 style={{ textAlign: 'left' }}>Overview</h2>
+      <h3 style={{ textAlign: 'left' }}>Overview</h3>
       <div className="overview_item__container">
         {overviewItems &&
           Object.keys(overviewItems).map((el, i) => (

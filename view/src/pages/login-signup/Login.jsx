@@ -4,7 +4,7 @@ import userContext from '../../contexts/UserContext';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { UilSpinner } from '@iconscout/react-unicons';
+import { UilSpinner, UilInfoCircle } from '@iconscout/react-unicons';
 
 import './login-signup-style.scss';
 
@@ -31,8 +31,15 @@ const Login = () => {
           e.preventDefault();
           userContxt.loginUser(formData, navigateTo);
         }}
+        style={{ display: 'flex', flexDirection: 'column' }}
       >
-        <h2>LOGIN</h2>
+        <h2>LOGIN!</h2>
+        {userContxt?.userAlert && (
+          <div className="component-alert">
+            <UilInfoCircle size="1.5em" style={{ margin: 'auto 0.5em' }} />
+            <b style={{ margin: 'auto 0' }}>{userContxt.userAlert}</b>
+          </div>
+        )}
         <div className="input-block">
           <input
             type="email"

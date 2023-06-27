@@ -9,7 +9,7 @@ export const UserContextProvider = ({ children }) => {
   const intialState = {
     user: JSON.parse(localStorage.getItem('DDS_USER')),
     signUpSuccessMessage: null,
-    userALert: null,
+    userAlert: null,
     navBarVisibiltyStatus: true,
     isLoading: false,
   };
@@ -61,9 +61,14 @@ export const UserContextProvider = ({ children }) => {
             navigateTo('/');
           }
         }, 1000);
+      } else {
+        throw new Error(results.message);
       }
     } catch (err) {
-      console.log(err);
+      dispatch({
+        type: 'SIGN_IN_ERROR',
+        payload: err.message,
+      });
     }
   };
   /**
@@ -146,6 +151,7 @@ export const UserContextProvider = ({ children }) => {
         userALert: state.userALert,
         navBarVisibiltyStatus: state.navBarVisibiltyStatus,
         isLoading: state.isLoading,
+        userAlert: state.userAlert,
         loginUser,
         registerUser,
         logout,
