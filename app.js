@@ -12,6 +12,8 @@ const app = express();
 
 app.enable('trust proxy');
 
+app.use(express.static(path.join(__dirname, 'dist')));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
