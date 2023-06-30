@@ -51,6 +51,7 @@ function App() {
               <Routes>
                 <Route
                   path="/login"
+                  exact
                   element={
                     <React.Suspense fallback={<LoadingFallBack />}>
                       <Login />
@@ -59,6 +60,7 @@ function App() {
                 />
                 <Route
                   path="/signup"
+                  exact
                   element={
                     <React.Suspense fallback={<LoadingFallBack />}>
                       <Signup />
@@ -67,6 +69,7 @@ function App() {
                 />
                 <Route
                   path="/forgot-password"
+                  exact
                   element={
                     <React.Suspense fallback={<LoadingFallBack />}>
                       <ForgotPassword />
@@ -83,6 +86,7 @@ function App() {
                 />
                 <Route
                   path="/account-verification"
+                  exact
                   element={
                     <React.Suspense fallback={<LoadingFallBack />}>
                       <AccountVerification />
@@ -93,6 +97,7 @@ function App() {
                 {/* NOTE: The following routes are allowed to all accounts */}
                 <Route
                   path="/account/overview"
+                  exact
                   element={
                     <RequireAuthentication
                       child={
@@ -112,6 +117,7 @@ function App() {
 
                 <Route
                   path="/account/profile"
+                  exact
                   element={
                     <RequireAuthentication
                       child={
@@ -131,6 +137,7 @@ function App() {
 
                 <Route
                   path="/account/update-password"
+                  exact
                   element={
                     <RequireAuthentication
                       child={
@@ -150,6 +157,7 @@ function App() {
                 {/* NOTE: The following routes are allowed to only 'admin' accounts */}
                 <Route
                   path="/admin"
+                  exact
                   element={
                     <RequireAuthentication
                       child={
@@ -168,6 +176,7 @@ function App() {
                 />
                 <Route
                   path="/admin/users"
+                  exact
                   element={
                     <RequireAuthentication
                       child={
@@ -187,6 +196,7 @@ function App() {
 
                 <Route
                   path="/admin/users/:user_id"
+                  exact
                   element={
                     <RequireAuthentication
                       child={
@@ -207,6 +217,7 @@ function App() {
                 {/* NOTE: The following routes are allowed to 'business' accounts */}
                 <Route
                   path="/"
+                  exact
                   element={
                     <RequireAuthentication
                       child={
@@ -225,6 +236,7 @@ function App() {
                 />
                 <Route
                   path="/explore"
+                  exact
                   element={
                     <RequireAuthentication
                       child={
@@ -243,6 +255,7 @@ function App() {
                 />
                 <Route
                   path="/user-clients"
+                  exact
                   element={
                     <RequireAuthentication
                       child={
