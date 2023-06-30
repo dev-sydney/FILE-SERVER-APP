@@ -45,6 +45,16 @@ const GetFileThumbNail = (file) => {
           </p>
         </video>
       );
+    case 'audio':
+      return (
+        <audio controls className="file-preview">
+          <source src={`/files/${file?.file_name}`} type={file?.file_type} />
+          <p>
+            Your browser does not support this audio format. Download
+            <a href={`/files/${file?.file_name}`}>the file</a> instead.
+          </p>
+        </audio>
+      );
 
     default:
       return <div></div>;

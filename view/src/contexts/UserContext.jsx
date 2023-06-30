@@ -60,7 +60,7 @@ export const UserContextProvider = ({ children }) => {
           } else {
             navigateTo('/');
           }
-        }, 1000);
+        }, 800);
       } else {
         throw new Error(results.message);
       }

@@ -1,5 +1,5 @@
 #root {
-  max-width: 1280px;
+  max-width: 100vw;
   min-height: inherit;
   text-align: center;
   scroll-behavior: smooth;
@@ -18,9 +18,18 @@ body {
 }
 h1,
 h2,
+h3 {
+  font-family: 'Prompt', sans-serif;
+}
+h1,
+h2,
 h3,
 p {
   margin: 0;
+}
+P,
+span {
+  font-family: 'Sora', sans-serif;
 }
 /* NOTE: Styling for the container holding the entire UI */
 .work_space {
@@ -37,18 +46,21 @@ div.input-block {
   position: relative;
   margin: 0.7em 0;
 }
-div.input-block input {
+div.input-block input,
+textarea {
   font-weight: 500;
   font-size: 1em;
   color: #121927;
   width: 86%;
-  padding: 1rem 1.7rem;
+  padding: 1rem 1.5em;
   border-radius: 5px;
   /* border: 2px solid #d9d9d9; */
   background-color: #d9d9d973;
   outline: none;
   border: none;
+  font-family: lato;
 }
+
 div.input-block span.placeholder {
   position: absolute;
   margin: 17px 0;

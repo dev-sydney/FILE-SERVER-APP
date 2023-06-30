@@ -101,7 +101,6 @@ const ClientListModalWindow = ({
     e.preventDefault();
 
     setIsLoading(true);
-
     fetch(
       `/api/v1/files/share?client_ids=${checked.join(
         ','
@@ -174,7 +173,7 @@ const ClientListModalWindow = ({
       <div>
         {/* NOTE:Form for submitting the subject & caption */}
         <form onSubmit={handleFormSubmit} className="email-subject-form">
-          <div className="input-block" style={{ width: '20em' }}>
+          <div className="input-block">
             <input
               type="text"
               name="subject"
@@ -183,7 +182,17 @@ const ClientListModalWindow = ({
             />
             <span className="placeholder">Subject:</span>
           </div>
-
+          <div className="input-block">
+            <textarea
+              name="caption"
+              placeholder="A short description of the files being shared"
+              required
+              style={{ resize: 'none' }}
+              rows="5"
+              cols="42"
+              onChange={handleFormInputChange}
+            ></textarea>
+          </div>
           <button className="submit_btn email-submit">
             {isLoading ? 'Sending...' : 'Send'}
           </button>
