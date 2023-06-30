@@ -167,7 +167,7 @@ const accountVerificationTemplate = (url, verificationCode) => `<!DOCTYPE html>
           <!-- start copy -->
           <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0;">Thanks for starting the DDS account creation process. We want to make sure it's really you. Please enter the following verification code when prompted. If you don’t want to create an account, you can ignore this message.</p>
+              <p style="margin: 0;"> We want to make sure it's really you. Please enter the following verification code where prompted and If you did not just try accessing your account, you can ignore this message.</p>
             </td>
           </tr>
           <!-- end copy -->

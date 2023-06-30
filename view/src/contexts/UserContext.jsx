@@ -29,7 +29,7 @@ export const UserContextProvider = ({ children }) => {
    * @param {Object} formData The Form data
    * @param {Function} navigateTo
    */
-  const loginUser = async (formData, navigateTo) => {
+  const loginUser = async (formData) => {
     try {
       dispatch({
         type: 'SET_LOADING',
@@ -50,17 +50,8 @@ export const UserContextProvider = ({ children }) => {
         //TODO: Dispatch to the reducer to set the context state
         dispatch({
           type: 'SIGN_IN_USER',
-          payload: results.user,
+          payload: results.message,
         });
-
-        //TODO: Navigate the user to the appropriate page
-        setTimeout(() => {
-          if (results.user.privilege === 'admin') {
-            navigateTo('/admin');
-          } else {
-            navigateTo('/');
-          }
-        }, 800);
       } else {
         throw new Error(results.message);
       }

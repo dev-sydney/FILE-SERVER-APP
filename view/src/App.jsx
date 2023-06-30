@@ -29,6 +29,7 @@ const UpdatePassword = React.lazy(() =>
 const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
 const AllUsersPage = React.lazy(() => import('./pages/AllUsersPage'));
+const NotFoundPage = React.lazy(() => import('./pages/NotFound'));
 
 import RequireAuthentication from './components/auth/RequireAuthentication';
 import RequireAuthorization from './components/auth/RequireAuthorization';
@@ -256,6 +257,14 @@ function App() {
                         />
                       }
                     />
+                  }
+                />
+                <Route
+                  path="*"
+                  element={
+                    <React.Suspense fallback={<LoadingFallBack />}>
+                      <NotFoundPage />
+                    </React.Suspense>
                   }
                 />
               </Routes>
