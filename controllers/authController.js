@@ -42,7 +42,8 @@ const createSendAuthToken = (
     httpOnly: true,
   };
 
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  if (req.secure || process.env.NODE_ENV === 'production')
+    cookieOptions.secure = true;
 
   res.cookie('dds_jwt', token, cookieOptions);
 
@@ -208,7 +209,7 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
     'host'
   )}/api/v1/users/reset-password/${resetToken}`;
 
-  const emailFrom = `Sydney from file-server ${process.env.MAIL_FROM}`;
+  const emailFrom = `Sydney from Send-File ${process.env.MAIL_FROM}`;
 
   try {
     await new Email(

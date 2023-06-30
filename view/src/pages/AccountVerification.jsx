@@ -63,8 +63,8 @@ const AccountVerification = () => {
           regexCriteria={/^[ A-Za-z0-9_@./#&+-]*$/}
         />
         {responseMessage !== '' && responseMessage}
-        <p>Did not get the code?</p>
-        <b>RESEND CODE</b>
+        {/* <p>Did not get the code?</p>
+        <b>RESEND CODE</b> */}
       </div>
     </div>
   );

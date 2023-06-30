@@ -94,7 +94,7 @@ exports.shareFilesToEmails = catchAsyncError(async (req, res, next) => {
     await new Email(
       null,
       null,
-      `${req.user.user_name} ${req.user.email_address}`,
+      req.user.user_name,
       clientsEmails
     ).sendFileToClients(req.body.subject, req.body.caption, fileAttachments);
 
@@ -120,7 +120,7 @@ exports.shareFilesToEmails = catchAsyncError(async (req, res, next) => {
     );
     const [insertCommandResults] = await pool.query(insertCommandString);
 
-    console.log(insertCommandResults.info);
+    // console.log(insertCommandResults.info);
 
     res.status(200).json({
       status: 'success',

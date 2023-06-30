@@ -3,6 +3,7 @@ import {
   UilFileAlt,
   UilFilm,
   UilFileQuestionAlt,
+  UilMusic,
   //  UilDocumentInfo
 } from '@iconscout/react-unicons';
 import getColorShade from './getColorShade';
@@ -94,7 +95,42 @@ const getFileIcon = (file) => {
           style={{ backgroundColor: getColorShade('#D61A1A', 200) }}
         />
       );
-
+    case 'mpeg':
+      return (
+        <UilMusic
+          size="2em"
+          className="file_icon"
+          color="#5686EA"
+          style={{ backgroundColor: getColorShade('#5686EA', 200) }}
+        />
+      );
+    case 'aac':
+      return (
+        <UilMusic
+          size="2em"
+          className="file_icon"
+          color="#5686EA"
+          style={{ backgroundColor: getColorShade('#5686EA', 200) }}
+        />
+      );
+    case 'midi':
+      return (
+        <UilMusic
+          size="2em"
+          className="file_icon"
+          color="#5686EA"
+          style={{ backgroundColor: getColorShade('#5686EA', 200) }}
+        />
+      );
+    case 'ogg':
+      return (
+        <UilMusic
+          size="2em"
+          className="file_icon"
+          color="#5686EA"
+          style={{ backgroundColor: getColorShade('#5686EA', 200) }}
+        />
+      );
     default:
       return (
         <UilFileQuestionAlt

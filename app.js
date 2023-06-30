@@ -10,6 +10,8 @@ const clientRouter = require('./routes/clientsRoutes');
 
 const app = express();
 
+app.enable('trust proxy');
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());

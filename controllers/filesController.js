@@ -122,12 +122,14 @@ exports.getBusinessFiles = catchAsyncError(async (req, res, next) => {
     );
 
   const [queryResults] = await pool.query(
-    `SELECT COUNT(FileShareToClients.file_id) AS times_shared,
-    title, file_description, file_type, file_name, created_at
-    FROM Files
-    LEFT JOIN FileShareToClients ON Files.file_id = FileShareToClients.file_id
-    WHERE Files.user_id = ?
-    GROUP BY Files.file_id`,
+    `SELECT  F.title, F.file_description, F.file_type, F.file_name, F.created_at,
+    COUNT(FSC.file_id) AS times_shared,
+   COUNT(FD.download_id) AS no_downloads
+FROM Files F
+LEFT JOIN FileShareToClients FSC ON F.file_id = FSC.file_id
+LEFT JOIN FileDownloads FD ON F.file_id = FD.file_id
+WHERE F.user_id = ?
+GROUP BY F.file_id;`,
     [+req.params.user_id]
   );
 

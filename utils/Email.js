@@ -17,7 +17,7 @@ module.exports = class Email {
     this.to = to;
     this.userName = user?.user_name?.split(' ')[0];
     this.url = url;
-    this.from = from;
+    this.from = `${from} via ${process.env.MAIL_FROM}`;
   }
 
   /**
@@ -25,26 +25,26 @@ module.exports = class Email {
    * @returns an email transport object
    */
   newTransport() {
-    return nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
-      port: process.env.MAIL_PORT,
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
-      },
-    });
-    // if (process.env.NODE_ENV === 'production') {
-    //   //production email service
-    // } else {
-    //   return nodemailer.createTransport({
-    //     host: process.env.MAIL_HOST,
-    //     port: process.env.MAIL_PORT,
-    //     auth: {
-    //       user: process.env.MAIL_USER,
-    //       pass: process.env.MAIL_PASS,
-    //     },
-    //   });
-    // }
+    if (process.env.NODE_ENV === 'production') {
+      //Sendgrid
+      return nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SEND_GRID_USERNAME,
+          pass: process.env.SEND_GRID_PASSWORD,
+        },
+        port: process.env.SEND_GRID_PORT,
+      });
+    } else {
+      return nodemailer.createTransport({
+        host: process.env.MAIL_HOST,
+        port: process.env.MAIL_PORT,
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASS,
+        },
+      });
+    }
   }
 
   async send(subject, action, ...emailContent) {

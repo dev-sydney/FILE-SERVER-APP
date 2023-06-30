@@ -1,331 +1,436 @@
 module.exports = (caption) => `<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>Email Confirmation</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type="text/css">
-      /**
-   * Google webfonts. Recommended to include the .woff version for cross-client compatibility.
-   */
-      @media screen {
-        @font-face {
-          font-family: 'Source Sans Pro';
-          font-style: normal;
-          font-weight: 400;
-          src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'),
-            url(https://fonts.gstatic.com/s/sourcesanspro/v10/ODelI1aHBYDBqgeIAH2zlBM0YzuT7MdOe03otPbuUS0.woff)
-              format('woff');
-        }
-        @font-face {
-          font-family: 'Source Sans Pro';
-          font-style: normal;
-          font-weight: 700;
-          src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'),
-            url(https://fonts.gstatic.com/s/sourcesanspro/v10/toadOcfmlt9b38dHJxOBGFkQc6VGVFSmCnC_l7QZG60.woff)
-              format('woff');
-        }
-      }
-      /**
-   * Avoid browser level font resizing.
-   * 1. Windows Mobile
-   * 2. iOS / OSX
-   */
-      body,
-      table,
-      td,
-      a {
-        -ms-text-size-adjust: 100%; /* 1 */
-        -webkit-text-size-adjust: 100%; /* 2 */
-      }
-      /**
-   * Remove extra space added to tables and cells in Outlook.
-   */
-      table,
-      td {
-        mso-table-rspace: 0pt;
-        mso-table-lspace: 0pt;
-      }
-      /**
-   * Better fluid images in Internet Explorer.
-   */
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Simple Transactional Email</title>
+    <style>
+      /* -------------------------------------
+          GLOBAL RESETS
+      ------------------------------------- */
+
+      /*All the styling goes here*/
+
       img {
+        border: none;
         -ms-interpolation-mode: bicubic;
+        max-width: 100%;
       }
-      /**
-   * Remove blue links for iOS devices.
-   */
-      a[x-apple-data-detectors] {
-        font-family: inherit !important;
-        font-size: inherit !important;
-        font-weight: inherit !important;
-        line-height: inherit !important;
-        color: inherit !important;
-        text-decoration: none !important;
-      }
-      /**
-   * Fix centering issues in Android 4.4.
-   */
-      div[style*='margin: 16px 0;'] {
-        margin: 0 !important;
-      }
+
       body {
-        width: 100% !important;
-        height: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
+        background-color: #f6f6f6;
+        font-family: sans-serif;
+        -webkit-font-smoothing: antialiased;
+        font-size: 14px;
+        line-height: 1.4;
+        margin: 0;
+        padding: 0;
+        -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
       }
-      /**
-   * Collapse table borders to avoid space between cells.
-   */
+
       table {
-        border-collapse: collapse !important;
+        border-collapse: separate;
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+        width: 100%;
       }
+      table td {
+        font-family: sans-serif;
+        font-size: 14px;
+        vertical-align: top;
+      }
+
+      /* -------------------------------------
+          BODY & CONTAINER
+      ------------------------------------- */
+
+      .body {
+        background-color: #f6f6f6;
+        width: 100%;
+      }
+
+      /* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
+      .container {
+        display: block;
+        margin: 0 auto !important;
+        /* makes it centered */
+        max-width: 580px;
+        padding: 10px;
+        width: 580px;
+      }
+
+      /* This should also be a block element, so that it will fill 100% of the .container */
+      .content {
+        box-sizing: border-box;
+        display: block;
+        margin: 0 auto;
+        max-width: 580px;
+        padding: 10px;
+      }
+
+      /* -------------------------------------
+          HEADER, FOOTER, MAIN
+      ------------------------------------- */
+      .main {
+        background: #ffffff;
+        border-radius: 3px;
+        width: 100%;
+      }
+
+      .wrapper {
+        box-sizing: border-box;
+        padding: 20px;
+      }
+
+      .content-block {
+        padding-bottom: 10px;
+        padding-top: 10px;
+      }
+
+      .footer {
+        clear: both;
+        margin-top: 10px;
+        text-align: center;
+        width: 100%;
+      }
+      .footer td,
+      .footer p,
+      .footer span,
+      .footer a {
+        color: #999999;
+        font-size: 12px;
+        text-align: center;
+      }
+
+      /* -------------------------------------
+          TYPOGRAPHY
+      ------------------------------------- */
+      h1,
+      h2,
+      h3,
+      h4 {
+        color: #000000;
+        font-family: sans-serif;
+        font-weight: 400;
+        line-height: 1.4;
+        margin: 0;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        font-size: 35px;
+        font-weight: 300;
+        text-align: center;
+        text-transform: capitalize;
+      }
+
+      p,
+      ul,
+      ol {
+        font-family: sans-serif;
+        font-size: 14px;
+        font-weight: normal;
+        margin: 0;
+        margin-bottom: 15px;
+      }
+      p li,
+      ul li,
+      ol li {
+        list-style-position: inside;
+        margin-left: 5px;
+      }
+
       a {
-        color: #1a82e2;
+        color: #3498db;
+        text-decoration: underline;
       }
-      img {
-        height: auto;
-        line-height: 100%;
+
+      /* -------------------------------------
+          BUTTONS
+      ------------------------------------- */
+      .btn {
+        box-sizing: border-box;
+        width: 100%;
+      }
+      .btn > tbody > tr > td {
+        padding-bottom: 15px;
+      }
+      .btn table {
+        width: auto;
+      }
+      .btn table td {
+        background-color: #ffffff;
+        border-radius: 5px;
+        text-align: center;
+      }
+      .btn a {
+        background-color: #ffffff;
+        border: solid 1px #3498db;
+        border-radius: 5px;
+        box-sizing: border-box;
+        color: #3498db;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+        margin: 0;
+        padding: 12px 25px;
         text-decoration: none;
+        text-transform: capitalize;
+      }
+
+      .btn-primary table td {
+        background-color: #3498db;
+      }
+
+      .btn-primary a {
+        background-color: #3498db;
+        border-color: #3498db;
+        color: #ffffff;
+      }
+
+      /* -------------------------------------
+          OTHER STYLES THAT MIGHT BE USEFUL
+      ------------------------------------- */
+      .last {
+        margin-bottom: 0;
+      }
+
+      .first {
+        margin-top: 0;
+      }
+
+      .align-center {
+        text-align: center;
+      }
+
+      .align-right {
+        text-align: right;
+      }
+
+      .align-left {
+        text-align: left;
+      }
+
+      .clear {
+        clear: both;
+      }
+
+      .mt0 {
+        margin-top: 0;
+      }
+
+      .mb0 {
+        margin-bottom: 0;
+      }
+
+      .preheader {
+        color: transparent;
+        display: none;
+        height: 0;
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        mso-hide: all;
+        visibility: hidden;
+        width: 0;
+      }
+
+      .powered-by a {
+        text-decoration: none;
+      }
+
+      hr {
         border: 0;
-        outline: none;
+        border-bottom: 1px solid #f6f6f6;
+        margin: 20px 0;
+      }
+
+      /* -------------------------------------
+          RESPONSIVE AND MOBILE FRIENDLY STYLES
+      ------------------------------------- */
+      @media only screen and (max-width: 620px) {
+        table.body h1 {
+          font-size: 28px !important;
+          margin-bottom: 10px !important;
+        }
+        table.body p,
+        table.body ul,
+        table.body ol,
+        table.body td,
+        table.body span,
+        table.body a {
+          font-size: 16px !important;
+        }
+        table.body .wrapper,
+        table.body .article {
+          padding: 10px !important;
+        }
+        table.body .content {
+          padding: 0 !important;
+        }
+        table.body .container {
+          padding: 0 !important;
+          width: 100% !important;
+        }
+        table.body .main {
+          border-left-width: 0 !important;
+          border-radius: 0 !important;
+          border-right-width: 0 !important;
+        }
+        table.body .btn table {
+          width: 100% !important;
+        }
+        table.body .btn a {
+          width: 100% !important;
+        }
+        table.body .img-responsive {
+          height: auto !important;
+          max-width: 100% !important;
+          width: auto !important;
+        }
+      }
+
+      /* -------------------------------------
+          PRESERVE THESE STYLES IN THE HEAD
+      ------------------------------------- */
+      @media all {
+        .ExternalClass {
+          width: 100%;
+        }
+        .ExternalClass,
+        .ExternalClass p,
+        .ExternalClass span,
+        .ExternalClass font,
+        .ExternalClass td,
+        .ExternalClass div {
+          line-height: 100%;
+        }
+        .apple-link a {
+          color: inherit !important;
+          font-family: inherit !important;
+          font-size: inherit !important;
+          font-weight: inherit !important;
+          line-height: inherit !important;
+          text-decoration: none !important;
+        }
+        #MessageViewBody a {
+          color: inherit;
+          text-decoration: none;
+          font-size: inherit;
+          font-family: inherit;
+          font-weight: inherit;
+          line-height: inherit;
+        }
+        .btn-primary table td:hover {
+          background-color: #34495e !important;
+        }
+        .btn-primary a:hover {
+          background-color: #34495e !important;
+          border-color: #34495e !important;
+        }
       }
     </style>
   </head>
-  <body style="background-color: #e9ecef">
-    <!-- start preheader -->
-    <div
-      class="preheader"
-      style="
-        display: none;
-        max-width: 0;
-        max-height: 0;
-        overflow: hidden;
-        font-size: 1px;
-        line-height: 1px;
-        color: #fff;
-        opacity: 0;
-      "
+  <body>
+    <table
+      role="presentation"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      class="body"
     >
-      A preheader is the short summary text that follows the subject line when
-      an email is viewed in the inbox.
-    </div>
-    <!-- end preheader -->
-
-    <!-- start body -->
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <!-- start logo -->
       <tr>
-        <td align="center" bgcolor="#e9ecef">
-          <!--[if (gte mso 9)|(IE)]>
-        <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-        <tr>
-        <td align="center" valign="top" width="600">
-        <![endif]-->
-          <table
-            border="0"
-            cellpadding="0"
-            cellspacing="0"
-            width="100%"
-            style="max-width: 600px"
-          >
-            <tr>
-              <td align="center" valign="top" style="padding: 36px 24px">
-                <a
-                  href="https://www.blogdesire.com"
-                  target="_blank"
-                  style="display: inline-block"
-                >
-                  <img
-                    src="https://www.blogdesire.com/wp-content/uploads/2019/07/blogdesire-1.png"
-                    alt="Logo"
+        <td>&nbsp;</td>
+        <td class="container">
+          <div class="content">
+            <!-- START CENTERED WHITE CONTAINER -->
+            <table role="presentation" class="main">
+              <!-- START MAIN CONTENT AREA -->
+              <tr>
+                <td class="wrapper">
+                  <table
+                    role="presentation"
                     border="0"
-                    width="48"
-                    style="
-                      display: block;
-                      width: 48px;
-                      max-width: 48px;
-                      min-width: 48px;
-                    "
-                  />
-                </a>
-              </td>
-            </tr>
-          </table>
-          <!--[if (gte mso 9)|(IE)]>
-        </td>
-        </tr>
-        </table>
-        <![endif]-->
-        </td>
-      </tr>
-      <!-- end logo -->
+                    cellpadding="0"
+                    cellspacing="0"
+                  >
+                    <tr>
+                      <td>
+                        <p>Hi there,</p>
+                        <p>
+                         ${caption}
+                        </p>
+                        <table
+                          role="presentation"
+                          border="0"
+                          cellpadding="0"
+                          cellspacing="0"
+                          class="btn btn-primary"
+                        >
+                          <tbody>
+                            <tr>
+                              <td align="left">
+                                <table
+                                  role="presentation"
+                                  border="0"
+                                  cellpadding="0"
+                                  cellspacing="0"
+                                >
+                                  <tbody></tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <!-- <p>
+                          This is a really simple email template. Its sole
+                          purpose is to get the recipient to click the button
+                          with no distractions.
+                        </p> -->
+                        <p>Thank you! and all the best.</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
 
-      <!-- start hero -->
-      <tr>
-        <td align="center" bgcolor="#e9ecef">
-          <!--[if (gte mso 9)|(IE)]>
-        <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-        <tr>
-        <td align="center" valign="top" width="600">
-        <![endif]-->
-          <table
-            border="0"
-            cellpadding="0"
-            cellspacing="0"
-            width="100%"
-            style="max-width: 600px"
-          >
-            <tr>
-              <td
-                align="left"
-                bgcolor="#ffffff"
-                style="
-                  padding: 36px 24px 0;
-                  font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                  border-top: 3px solid #d4dadf;
-                "
+              <!-- END MAIN CONTENT AREA -->
+            </table>
+            <!-- END CENTERED WHITE CONTAINER -->
+
+            <!-- START FOOTER -->
+            <div class="footer">
+              <table
+                role="presentation"
+                border="0"
+                cellpadding="0"
+                cellspacing="0"
               >
-                <h1
-                  style="
-                    margin: 0;
-                    font-size: 32px;
-                    font-weight: 700;
-                    letter-spacing: -1px;
-                    line-height: 48px;
-                  "
-                >
-                  Hi there,
-                </h1>
-              </td>
-            </tr>
-          </table>
-          <!--[if (gte mso 9)|(IE)]>
+                <tr>
+                  <td class="content-block">
+                    <span class="apple-link"
+                      >Send-File Inc, Madina new Road, Accra CA 94102</span
+                    >
+                    <br />
+                    Don't like these emails?
+                  </td>
+                </tr>
+                <tr>
+                  <td class="content-block powered-by">
+                    Powered by <a href="http://htmlemail.io">HTMLemail</a>.
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <!-- END FOOTER -->
+          </div>
         </td>
-        </tr>
-        </table>
-        <![endif]-->
-        </td>
+        <td>&nbsp;</td>
       </tr>
-      <!-- end hero -->
-
-      <!-- start copy block -->
-      <tr>
-        <td align="center" bgcolor="#e9ecef">
-          <!--[if (gte mso 9)|(IE)]>
-        <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-        <tr>
-        <td align="center" valign="top" width="600">
-        <![endif]-->
-          <table
-            border="0"
-            cellpadding="0"
-            cellspacing="0"
-            width="100%"
-            style="max-width: 600px"
-          >
-            <!-- start copy -->
-            <tr>
-              <td
-                align="left"
-                bgcolor="#ffffff"
-                style="
-                  padding: 24px;
-                  font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                  font-size: 16px;
-                  line-height: 24px;
-                "
-              >
-                <p style="margin: 0">
-                  ${caption}
-                </p>
-              </td>
-            </tr>
-
-            <!-- end copy -->
-          </table>
-          <!--[if (gte mso 9)|(IE)]>
-        </td>
-        </tr>
-        </table>
-        <![endif]-->
-        </td>
-      </tr>
-      <!-- end copy block -->
-
-      <!-- start footer -->
-      <tr>
-        <td align="center" bgcolor="#e9ecef" style="padding: 24px">
-          <!--[if (gte mso 9)|(IE)]>
-        <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-        <tr>
-        <td align="center" valign="top" width="600">
-        <![endif]-->
-          <table
-            border="0"
-            cellpadding="0"
-            cellspacing="0"
-            width="100%"
-            style="max-width: 600px"
-          >
-            <!-- start permission -->
-            <tr>
-              <td
-                align="center"
-                bgcolor="#e9ecef"
-                style="
-                  padding: 12px 24px;
-                  font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                  font-size: 14px;
-                  line-height: 20px;
-                  color: #666;
-                "
-              >
-                <p style="margin: 0">
-                  You received this email because you have some business with
-                  this company or entity. If you do not have anything to do with
-                  company, you can safely delete this email.
-                </p>
-              </td>
-            </tr>
-            <!-- end permission -->
-
-            <!-- start unsubscribe -->
-            <tr>
-              <td
-                align="center"
-                bgcolor="#e9ecef"
-                style="
-                  padding: 12px 24px;
-                  font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                  font-size: 14px;
-                  line-height: 20px;
-                  color: #666;
-                "
-              >
-                <p style="margin: 0">
-                  To stop receiving these emails, you can
-                  <a href="#" target="_blank">unsubscribe</a> at any time.
-                </p>
-                <p style="margin: 0">
-                  File-server Inc, 3 Oyibi Road, Accra CA 94102
-                </p>
-              </td>
-            </tr>
-            <!-- end unsubscribe -->
-          </table>
-          <!--[if (gte mso 9)|(IE)]>
-        </td>
-        </tr>
-        </table>
-        <![endif]-->
-        </td>
-      </tr>
-      <!-- end footer -->
     </table>
-    <!-- end body -->
   </body>
 </html>
 `;

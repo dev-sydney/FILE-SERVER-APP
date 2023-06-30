@@ -19,12 +19,10 @@ const NavBar = () => {
       className={`nav__bar ${!userContxt?.user && 'not-loggedin'}`}
       style={{ display: `${!userContxt.navBarVisibiltyStatus ? 'none' : ''}` }}
     >
-      <h2 style={{ textAlign: 'center' }}>Untitled App</h2>
-      <hr />
       <ul>
         {userContxt.user &&
           (['business'].includes(userContxt.user.privilege) ? (
-            <li>
+            <li style={{ marginTop: '3em' }}>
               <NavLink to="/">
                 <UilNewspaper
                   size="2em"
