@@ -141,7 +141,7 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
 
   const verificationURL = `${req.protocol}://${req.get(
     'host'
-  )}/api/v1/users/verification/`;
+  )}/account-verification`;
 
   const emailFrom = `Lizzy from DDS ${process.env.MAIL_FROM}`;
 
@@ -207,7 +207,7 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   //TODO: Set the URL to which the password would be reset
   const passwordResetURL = `${req.protocol}://${req.get(
     'host'
-  )}/api/v1/users/reset-password/${resetToken}`;
+  )}/password-reset/${resetToken}`;
 
   const emailFrom = `Sydney from Send-File ${process.env.MAIL_FROM}`;
 
