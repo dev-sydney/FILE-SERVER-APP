@@ -112,9 +112,11 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
     );
 
   //5. send the email to the user
-  const verificationURL = `http://127.0.0.1:5173/account-verification/`;
+  const verificationURL = `${req.protocol}://${req.get(
+    'host'
+  )}/account-verification`;
 
-  const emailFrom = `Lizzy from DDS ${process.env.MAIL_FROM}`;
+  const emailFrom = `Lizzy from Send-File ${process.env.MAIL_FROM}`;
 
   try {
     await new Email(
@@ -186,7 +188,7 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
 
   const verificationURL = `${req.protocol}://${req.get(
     'host'
-  )}/api/v1/users/verification/`;
+  )}/account-verification`;
 
   const emailFrom = `Lizzy from DDS ${process.env.MAIL_FROM}`;
 
@@ -198,7 +200,7 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
       req.body.email_address
     ).sendAccountVerificationMail(verificationCode);
 
-    res.status(201).json({
+    res.status(200).json({
       message: "We've sent you a verification code, plase check your inbox",
     });
   } catch (err) {
@@ -252,7 +254,7 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   //TODO: Set the URL to which the password would be reset
   const passwordResetURL = `${req.protocol}://${req.get(
     'host'
-  )}/api/v1/users/reset-password/${resetToken}`;
+  )}/password-reset/${resetToken}`;
 
   const emailFrom = `Sydney from file-server ${process.env.MAIL_FROM}`;
 
