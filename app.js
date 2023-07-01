@@ -27,6 +27,10 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/files', fileRouter);
 app.use('/api/v1/clients', clientRouter);
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
 app.use(errorController);
 
 app.listen(port, function () {
