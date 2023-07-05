@@ -1,0 +1,130 @@
+const catchAsyncError = require('../utils/catchAsyncError');
+const GlobalAppError = require('./../utils/GlobalAppError');
+const APIFeatures = require('../utils/APIFeatures');
+
+const pool = require('./../model/database');
+/**
+ * Route handler that handles requests to the route responsible for add new
+ * clients for a business
+ */
+exports.addClientContact = catchAsyncError(async (req, res, next) => {
+  const obj = { ...req.body };
+  obj.user_id = req.user.user_id;
+
+  let columns = Object.keys(obj).join(',');
+
+  let questionMarkPlaceholders = Object.values(obj)
+    .map((el) => '?')
+    .join(','); //Returns '?,?,?'
+
+  const [insertCommandResults] = await pool.query(
+    `INSERT INTO  Clients(${columns}) VALUES(${questionMarkPlaceholders})`,
+    [...Object.values(obj)]
+  );
+
+  if (insertCommandResults.insertId) {
+    res.status(201).json({
+      status: 'success',
+      message: 'Client added successfully',
+    });
+  } else {
+    return next(
+      new GlobalAppError('Trouble Adding the client, please try again.', 400)
+    );
+  }
+});
+
+/**
+ * Route handler that handles requests to the route responsible for reading all the
+ * clients of a business
+ */
+exports.getAllClientsContacts = catchAsyncError(async (req, res, next) => {
+  req.query.user_id = req.user.user_id;
+
+  const features = new APIFeatures(req.query, 'Clients')
+    .filter()
+    .sort()
+    .fieldLimit()
+    .limitQueryResults();
+
+  let queryString = features.getSQLQueryString();
+  let fieldValues = features.values;
+
+  const [clientsContacts] = await pool.query(queryString, fieldValues);
+
+  res.status(200).json({
+    status: 'success',
+    clientsContacts,
+  });
+});
+
+/**
+ * route handler for handling the updating client resources
+ */
+exports.updateClientContact = catchAsyncError(async (req, res, next) => {
+  //EDGE-CASE: If the client_id is absent from the req.params or is an empty string
+  if (!req.params.client_id || req.params.client_id === '')
+    return next(
+      new GlobalAppError(
+        'No contact was selected,please select one and try again',
+        400
+      )
+    );
+
+  const obj = { ...req.body };
+
+  //TODO: Get rid of fields that have an empty string value
+  Object.keys(obj).forEach((curField) => {
+    if (obj[curField] === '') delete obj[curField];
+  });
+  //TODO: Set the columns to be updated
+  const columns = Object.keys(obj).join('=?,') + '=?';
+
+  //TODO: Make the update
+  const [updateCommandResult] = await pool.query(
+    `UPDATE Clients SET ${columns} WHERE client_id = ?`,
+    [...Object.values(obj), +req.params.client_id]
+  );
+
+  if (updateCommandResult.affectedRows > 0) {
+    res.status(200).json({
+      message: 'Contact updated successfully',
+    });
+  } else {
+    return next(
+      new GlobalAppError('Trouble updating the contact, please try again', 400)
+    );
+  }
+});
+/**
+ * route handler for handling the deleting client resources
+ */
+exports.deleteClientContact = catchAsyncError(async (req, res, next) => {
+  //EDGE-CASE: If the client_id is absent from the req.params or is an empty string
+  if (!req.query.clientIds || req.query.clientIds === '')
+    return next(
+      new GlobalAppError(
+        'No contact was selected,please select one and try again',
+        400
+      )
+    );
+
+  const clientIds = req.query.clientIds.split(',').map((el) => +el);
+  const questionMarkPlaceholders = clientIds.map((el) => '?').join(',');
+
+  const [updateCommandResult] = await pool.query(
+    `UPDATE Clients SET client_status = false WHERE client_id IN (${questionMarkPlaceholders})`,
+    clientIds
+  );
+
+  if (updateCommandResult.affectedRows > 0) {
+    res.status(204).json({
+      status: 'success',
+      message: 'Contact deleted successfully',
+    });
+  } else {
+    return next(
+      new GlobalAppError('Trouble deleting the contact, please try again', 400)
+    );
+  }
+});

@@ -1,0 +1,80 @@
+.client_modal_window {
+  max-height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+  background: white;
+  padding: 1em 0.5em;
+
+  // width: 10em;
+  .email-subject-form {
+    padding: 0.4em;
+    padding-left: 0;
+    margin-left: 0.6em;
+    margin-right: 0.9em;
+    .email-submit {
+      width: 103%;
+    }
+    input[type='text'] {
+      background-color: #d3d3d348;
+    }
+  }
+}
+.client_item {
+  display: flex;
+  border-bottom: 1px solid gray;
+  padding: 0.7em 1em;
+  .client_details {
+    text-align: left;
+  }
+}
+
+.skeleton-client-item {
+  .skeleton-checkbox {
+    // outline: 1px solid red;
+    width: 2em;
+    height: 2em;
+  }
+  .skeleton-details {
+    // outline: 1px solid lime;
+    height: 2em;
+    width: 50%;
+    margin-left: 0.5em;
+    .skeleton-client-name {
+      min-height: 0.8em;
+      max-height: 0.8em;
+      min-width: 30%;
+      max-width: 30%;
+      // outline: 1px solid blue;
+    }
+    .skeleton-client-email {
+      min-height: 0.8em;
+      max-height: 0.8em;
+      min-width: 50%;
+      max-width: 50%;
+      margin-top: 0.5em;
+      // outline: 1px solid red;
+      // margin: 0.5em 0;
+    }
+  }
+}
+
+.add-client-form {
+  padding: 0.5em 1em;
+  width: fit-content;
+  border-radius: 10px;
+
+  box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+  -webkit-box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+  -moz-box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+  form {
+    margin-right: 1em;
+  }
+  input[type='submit'] {
+    width: 105%;
+    margin: 1em 0;
+  }
+}
+label {
+  display: block;
+}

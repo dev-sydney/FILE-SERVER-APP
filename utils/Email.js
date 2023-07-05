@@ -2,13 +2,26 @@ const nodemailer = require('nodemailer');
 const htmlToText = require('html-to-text');
 
 const createEmailTemplate = require('./../utils/createEmailTemplate');
+const accountVerificationTemplate = require('./../utils/createAccVerificationTemplate');
+const fileShareTemplate = require('./../utils/fileShareTemplate');
 
 module.exports = class Email {
+  /**
+   *
+   * @param {*} user The current user that is signing up
+   * @param {*} url the URL that will be set as the href of the call-to-action button link in the email
+   * @param {*} from the sender of the email
+   * @param {*} to The recipient of the mail
+   */
   constructor(user, url, from, to) {
     this.to = to;
-    this.userName = user.user_name.split(' ')[0];
+    this.userName = user?.user_name?.split(' ')[0];
     this.url = url;
-    this.from = from;
+    this.from = `${from} via ${
+      process.env.NODE_ENV === 'production'
+        ? process.env.MAIL_FROM
+        : process.env.TEST_MAIL_FROM
+    }`;
   }
 
   /**
@@ -17,7 +30,15 @@ module.exports = class Email {
    */
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      //production email service
+      //Sendgrid
+      return nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SEND_GRID_USERNAME,
+          pass: process.env.SEND_GRID_PASSWORD,
+        },
+        port: process.env.SEND_GRID_PORT,
+      });
     } else {
       return nodemailer.createTransport({
         host: process.env.MAIL_HOST,
@@ -62,5 +83,45 @@ module.exports = class Email {
       'Reset your password',
       firstParagraph
     );
+  }
+  /**
+   * This method sends the email with the verification code to the users emaill
+   * @param {String} verificationCode the unencrypted verification code
+   */
+  async sendAccountVerificationMail(verificationCode) {
+    const html = accountVerificationTemplate(this.url, verificationCode);
+
+    let subject = 'Account verification for Send-File';
+
+    const emailOptions = {
+      from: this.from,
+      to: this.to,
+      subject,
+      html,
+      text: htmlToText.htmlToText(html),
+    };
+
+    await this.newTransport().sendMail(emailOptions);
+  }
+
+  /**
+   * Function sends a batch email, which conatins the files which are being shared
+   * @param {String} subject The subject of the email
+   * @param {String} caption A breif description of the files being shared
+   * @param {Array} attachments File attachments
+   */
+  async sendFileToClients(subject, caption = '', attachments) {
+    const html = fileShareTemplate(caption);
+
+    const emailOptions = {
+      from: this.from,
+      to: this.to,
+      text: htmlToText.htmlToText(html),
+      subject,
+      html,
+      attachments,
+    };
+
+    await this.newTransport().sendMail(emailOptions);
   }
 };

@@ -395,7 +395,7 @@ const emailTemplate = (subject, name, url, action, ...msg) => {
                       <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                         <tr>
                           <td class="content-block">
-                            <span class="apple-link">File-server Inc, 3 Oyibi Road, Accra CA 94102</span>
+                            <span class="apple-link">Send-File Inc, 3 Oyibi Road, Accra CA 94102</span>
                             <br> Don't like these emails? <a href="#">Unsubscribe</a>.
                           </td>
                         </tr>

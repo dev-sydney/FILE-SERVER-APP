@@ -1,0 +1,27 @@
+.users_table_component {
+  border-radius: 5px;
+  #usersTable {
+    .user_td {
+      display: flex;
+      padding: 10px;
+      p {
+        margin: auto 0.5em;
+      }
+    }
+  }
+  .verification-status {
+    width: fit-content;
+    // font-size: 1.1em;
+    padding: 0.5em 0.5em;
+    border-radius: 45px;
+  }
+
+  .verified {
+    color: #008000;
+    background-color: #96ff96;
+  }
+  .unverified {
+    color: #ffa500;
+    background-color: #ffa60045;
+  }
+}

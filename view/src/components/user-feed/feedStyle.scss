@@ -1,0 +1,122 @@
+.feed_item {
+  background: white;
+  border-radius: 10px;
+  height: 13em;
+  width: 25em;
+  padding: 0.5em 1em;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s background;
+  margin: 0 1em;
+  box-shadow: 0px 2px 5px 0px rgba(186, 179, 179, 0.66);
+  -webkit-box-shadow: 0px 2px 5px 0px rgba(186, 179, 179, 0.66);
+  -moz-box-shadow: 0px 2px 5px 0px rgba(186, 179, 179, 0.66);
+
+  .skeleton-icon {
+    width: 1.2em;
+    height: 1.2em;
+  }
+
+  .file_details {
+    text-align: left;
+    margin-top: 0.5em;
+    overflow: hidden;
+    width: 100%;
+    .file_description {
+      overflow-wrap: break-word;
+      //   inline-size: 10em;
+      // overflow-y: auto;
+      max-height: calc(100% - 2em);
+      margin-top: 0.5em;
+    }
+    P {
+      color: gray;
+    }
+  }
+
+  .flex_1 {
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 5px;
+
+    .file_icon {
+      padding: 0.4em;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  }
+
+  .flex_2 {
+    text-align: left;
+
+    .file_icon {
+      padding: 0.5em;
+      border-radius: 15px;
+    }
+
+    .skeleton-file-type {
+      min-width: 2em;
+      min-height: 2em;
+    }
+  }
+
+  .flex_3 {
+    h2 {
+      color: #1c2840;
+    }
+    .skeleton-title {
+      min-height: 1em;
+      min-width: 50%;
+      max-width: 50%;
+    }
+
+    .skeleton-file-description {
+      min-height: 1em;
+    }
+  }
+}
+
+.share_btn {
+  color: white;
+  background-color: #121927;
+}
+.cancel-share-btn {
+  color: #121927;
+  background-color: transparent;
+  outline: 1px solid #121927;
+}
+.share_btn,
+.cancel-share-btn {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: 0.3s all;
+  display: flex;
+  cursor: pointer;
+  border: none;
+  span {
+    margin: auto 0;
+  }
+}
+
+.share_cancel {
+  // outline: 1px solid #121927;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  column-gap: 0.5em;
+}
+.share_btn:hover {
+  transform: translateY(-5px);
+  box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+  -webkit-box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+  -moz-box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+}
+.cancel-share-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+  -webkit-box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+  -moz-box-shadow: -1px 4px 10px 1px rgba(181, 177, 177, 1);
+}

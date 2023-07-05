@@ -1,0 +1,101 @@
+.acc-overview-page {
+  padding: 0 2%;
+  .displayname {
+    // outline: 1px solid red;
+    display: flex;
+    padding: 0 1em;
+  }
+
+  .row {
+    text-align: center;
+    margin: 0.5em 0;
+    h3 {
+      margin: auto 0;
+    }
+  }
+
+  .overview_btn {
+    color: white;
+    background-color: #121927;
+
+    font-size: 1rem;
+    padding: 0.7rem 3rem;
+    border-radius: 5px;
+    text-transform: uppercase;
+    display: inline-block;
+    text-decoration: none;
+    width: 100%;
+    transition: all 0.4s;
+    font-weight: 400;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /*Add later when we use this for the button in form*/
+    border: none;
+    cursor: pointer;
+
+    // width: 92%;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .logout {
+    background-color: rgba(231, 231, 231, 0.315);
+    color: #121927;
+    outline: 1.5px solid #121927;
+    font-weight: 600;
+    transition: 0.3s background-color;
+  }
+  .labels {
+    text-align: left;
+    padding: 0 1em;
+    margin: 0;
+  }
+}
+.update-password-form {
+  padding: 0 2%;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 10px;
+  span {
+    right: 0px;
+    transform: translateX(2em);
+  }
+  div.input-block input:valid + span.placeholder,
+  div.input-block input:focus + span.placeholder {
+    transform: scale(0.8) translateY(-30px) translateX(50px);
+    background: #fff;
+    width: fit-content;
+  }
+}
+.save__btn {
+  // @include btn;
+  color: white;
+  // background-color: #1fa1f8;
+  background-color: #284b63;
+
+  font-size: 1rem;
+  padding: 0.7rem 3rem;
+  border-radius: 5px;
+  text-transform: uppercase;
+  display: inline-block;
+  text-decoration: none;
+  width: 100%;
+  transition: all 0.4s;
+  font-weight: 400;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  /*Add later when we use this for the button in form*/
+  border: none;
+  cursor: pointer;
+  // width: fit-content;
+  margin: 0.5em 0;
+  display: flex;
+  justify-content: center;
+  // padding-top: 0.9em;
+}
+.logout:hover {
+  background-color: #121927;
+  color: rgba(231, 231, 231, 0.315);
+  outline: 1.5px solid #121927;
+  font-weight: 600;
+}

@@ -26,7 +26,13 @@ const signToken = (id) =>
  * @param {*} req
  * @param {*} res
  */
-const createSendAuthToken = (user, statusCode, req, res) => {
+const createSendAuthToken = (
+  user,
+  statusCode,
+  req,
+  res,
+  isForVerification = null
+) => {
   const token = signToken(user.user_id);
 
   const cookieOptions = {
@@ -36,7 +42,8 @@ const createSendAuthToken = (user, statusCode, req, res) => {
     httpOnly: true,
   };
 
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  if (req.secure || process.env.NODE_ENV === 'production')
+    cookieOptions.secure = true;
 
   res.cookie('dds_jwt', token, cookieOptions);
 
@@ -47,11 +54,18 @@ const createSendAuthToken = (user, statusCode, req, res) => {
     user.reset_password_token =
       undefined;
 
-  res.status(statusCode).json({
-    status: `${statusCode}`.startsWith('2') ? 'success' : 'fail',
-    token,
-    user,
-  });
+  if (isForVerification) {
+    res.status(200).json({
+      token,
+      message: "We've sent you a verification code, plase check your inbox",
+    });
+  } else {
+    res.status(statusCode).json({
+      status: `${statusCode}`.startsWith('2') ? 'success' : 'fail',
+      token,
+      user,
+    });
+  }
 };
 
 /**
@@ -59,7 +73,7 @@ const createSendAuthToken = (user, statusCode, req, res) => {
  */
 exports.loginUser = catchAsyncError(async (req, res, next) => {
   const [result] = await pool.query(
-    'SELECT * FROM Users WHERE email_address=?',
+    'SELECT user_id,user_password FROM Users WHERE email_address=?',
     [req.body.emailAddress]
   );
 
@@ -73,7 +87,55 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
     );
   }
 
-  createSendAuthToken(user, 200, req, res);
+  //TODO:
+  // 1.Prepare the verification code
+  const verificationCode = Math.floor(
+    Math.random() * (999999 - 100000) + 100000
+  ).toString();
+
+  //2. Encrypt the verification code
+  let encryptedVerificationCode = crypto
+    .createHash('sha256')
+    .update(verificationCode)
+    .digest('hex');
+
+  //3. Set the expiry time for the verification code
+  let verificationCodeExipresAt = new Date(Date.now() + 10 * 60 * 1000); //user gets 10 mins to verify their account
+
+  //4. Update the verification_code,verification_expires_at fields of the record in the DB
+  const [updateCommandResult] = await pool.query(
+    'UPDATE Users SET verification_code = ?, verification_expires_at = ? WHERE user_id = ?',
+    [encryptedVerificationCode, verificationCodeExipresAt, +user.user_id]
+  );
+  if (updateCommandResult.affectedRows !== 1)
+    return next(
+      new GlobalAppError('Trouble sending the verification code', 400)
+    );
+
+  //5. send the email to the user
+  const verificationURL = `${req.protocol}://${req.get(
+    'host'
+  )}/account-verification`;
+
+  const emailFrom = `Lizzy from Send-File ${process.env.MAIL_FROM}`;
+
+  try {
+    await new Email(
+      null,
+      verificationURL,
+      emailFrom,
+      req.body.emailAddress
+    ).sendAccountVerificationMail(verificationCode);
+
+    res.status(200).json({
+      message: "We've sent you a verification code, please check your inbox",
+    });
+  } catch (err) {
+    console.log(err);
+    return next(
+      new GlobalAppError('Error sending Email, please try again...', 500)
+    );
+  }
 });
 
 /**
@@ -90,6 +152,26 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
   //TODO: Hash the passowrd
   obj.user_password = await bcrypt.hash(obj.user_password, 12);
 
+  //TODO: Create the verification code of 6 digits
+  const verificationCode = Math.floor(
+    Math.random() * (999999 - 100000) + 100000
+  ).toString();
+
+  //TODO: Hash the verification code and add it to obj
+  obj.verification_code = crypto
+    .createHash('sha256')
+    .update(verificationCode)
+    .digest('hex');
+
+  //TODO: set the expiration for the verification code
+  let verificationCodeExipresAt = new Date(Date.now() + 10 * 60 * 1000); //user gets 10 mins to verify their account
+
+  obj.verification_expires_at = verificationCodeExipresAt
+    .toISOString()
+    .split('T')
+    .join(' ')
+    .replace('Z', '');
+
   delete obj['password_confirm'];
 
   //TODO: Setting the column names for the SQL insert commmand from the req.body
@@ -99,17 +181,44 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
     .map((el) => '?')
     .join(','); //Returns '?,?,?'
 
+  //TODO: Create the user in the database
   const [insertCommandResults] = await pool.query(
     `INSERT INTO  Users(${columns}) VALUES(${questionMarkPlaceholders})`,
     [...Object.values(obj)]
   );
 
-  const [queryResults] = await pool.query(
-    `SELECT * FROM Users WHERE user_id = ?`,
-    [insertCommandResults.insertId]
-  );
+  const verificationURL = `${req.protocol}://${req.get(
+    'host'
+  )}/account-verification`;
 
-  createSendAuthToken(queryResults[0], 201, req, res);
+  const emailFrom = `Lizzy from Send-File ${
+    process.env.NODE_ENV === 'production'
+      ? process.env.MAIL_FROM
+      : process.env.TEST_MAIL_FROM
+  }`;
+
+  try {
+    await new Email(
+      null,
+      verificationURL,
+      emailFrom,
+      req.body.email_address
+    ).sendAccountVerificationMail(verificationCode);
+
+    res.status(200).json({
+      message: "We've sent you a verification code, plase check your inbox",
+    });
+  } catch (err) {
+    //EDGE-CASE: If there was an issue that occurred when sending the mail
+    await pool.query(`DELETE FROM Users WHERE user_id = ?`, [
+      insertCommandResults.insertId,
+    ]);
+
+    console.log(err);
+    return next(
+      new GlobalAppError('Error sending Email, please try again...', 500)
+    );
+  }
 });
 
 /**
@@ -150,9 +259,9 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   //TODO: Set the URL to which the password would be reset
   const passwordResetURL = `${req.protocol}://${req.get(
     'host'
-  )}/api/v1/users/reset-password/${resetToken}`;
+  )}/password-reset/${resetToken}`;
 
-  const emailFrom = `Sydney from file-server ${process.env.MAIL_FROM}`;
+  const emailFrom = `Sydney from Send-File ${process.env.MAIL_FROM}`;
 
   try {
     await new Email(
@@ -282,6 +391,20 @@ exports.authenticateUser = catchAsyncError(async (req, res, next) => {
       new GlobalAppError('Invalid credentials or user no longer exists', 403)
     );
   }
+
+  //EDGE-CASE: Check if the business account is not verified
+  if (stillExistingUser.privilege === 'business') {
+    if (
+      stillExistingUser.is_verified === 0 &&
+      Date.now() > new Date(stillExistingUser.verification_expires_at)
+    )
+      return next(
+        new GlobalAppError(
+          'Account not verified on time, please click here to resend a verification code',
+          401
+        )
+      );
+  }
   //TODO: attach the user data to the request body
   req.user = stillExistingUser;
 
@@ -306,3 +429,109 @@ exports.restrictAccessTo =
     }
     next();
   };
+
+/**
+ * Route handler for verifying user accounts
+ */
+exports.verifyAccount = catchAsyncError(async (req, res, next) => {
+  //EDGE-CASE: If the verification code is missing
+  if (!req.body.verification_code || req.body.verification_code === '')
+    return next(
+      new GlobalAppError('No verification code sent, please try again', 400)
+    );
+
+  let currentDate = new Date(Date.now())
+    .toISOString()
+    .split('T')
+    .join(' ')
+    .replace('Z', '');
+
+  const cryptedVerificationCode = crypto
+    .createHash('sha256')
+    .update(req.body.verification_code)
+    .digest('hex');
+
+  const [queryResults] = await pool.query(
+    'SELECT * FROM Users WHERE verification_code=? AND verification_expires_at>=?',
+    [cryptedVerificationCode, currentDate]
+  );
+  const [user] = queryResults;
+
+  if (user) {
+    await pool.query(
+      `UPDATE Users SET is_verified=?,verification_code=?
+       WHERE user_id=? AND verification_code=?`,
+      [true, null, user.user_id, cryptedVerificationCode]
+    );
+
+    createSendAuthToken(user, 200, req, res);
+  } else {
+    return next(
+      new GlobalAppError(
+        'Incorrect code or account verification time window passed.',
+        400
+      )
+    );
+  }
+});
+
+/**
+ *Route handler for handling PATCH requests to the route for updating user passwords
+ */
+exports.updateUserPassword = catchAsyncError(async (req, res, next) => {
+  //EDGE-CASE:If the new password the doesn't match the its password confirm
+  if (req.body.newPassword !== req.body.passwordConfirm)
+    return next(
+      new GlobalAppError(
+        "password and confirm passwords, don't match, please try again",
+        400
+      )
+    );
+
+  const [queryResults] = await pool.query(
+    `SELECT * FROM Users WHERE user_id = ?`,
+    [req.user.user_id]
+  );
+
+  const [user] = queryResults;
+
+  //EDGE-CASE:If the current password doesn't match what is in the database
+  if (!(await bcrypt.compare(req.body.currentPassword, user.user_password))) {
+    return next(
+      new GlobalAppError('Current password is incorrect, please try again', 400)
+    );
+  }
+
+  //TODO: Hash the new password and update the record with it
+  const hashedPassword = await bcrypt.hash(req.body.newPassword, 12);
+
+  const [updateCommandResult] = await pool.query(
+    'UPDATE Users SET user_password = ? WHERE user_id = ?',
+    [hashedPassword, user.user_id]
+  );
+
+  if (updateCommandResult.affectedRows > 0) {
+    res.status(200).json({
+      status: 'success',
+      message: 'Password updated successfully',
+    });
+  } else {
+    return next(
+      new GlobalAppError(
+        'Sorry, password update was not successful, please try again',
+        400
+      )
+    );
+  }
+});
+
+exports.logoutUser = catchAsyncError(async (req, res, next) => {
+  res.cookie('dds_jwt', 'cookieOverWritingText', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+  });
+});
