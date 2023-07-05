@@ -17,7 +17,11 @@ module.exports = class Email {
     this.to = to;
     this.userName = user?.user_name?.split(' ')[0];
     this.url = url;
-    this.from = `${from} via ${process.env.MAIL_FROM}`;
+    this.from = `${from} via ${
+      process.env.NODE_ENV === 'production'
+        ? process.env.MAIL_FROM
+        : process.env.TEST_MAIL_FROM
+    }`;
   }
 
   /**
@@ -87,7 +91,7 @@ module.exports = class Email {
   async sendAccountVerificationMail(verificationCode) {
     const html = accountVerificationTemplate(this.url, verificationCode);
 
-    let subject = 'Account verification for DDS';
+    let subject = 'Account verification for Send-File';
 
     const emailOptions = {
       from: this.from,

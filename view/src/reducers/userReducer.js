@@ -9,14 +9,15 @@ const userReducer = (state, action) => {
       localStorage.removeItem('DDS_USER');
       return {
         ...state,
-        isLoading: false,
         userAlert: action.payload,
+        isLoading: false,
       };
     case 'SIGN_IN_ERROR':
       localStorage.removeItem('DDS_USER');
       return {
         ...state,
         userAlert: action.payload,
+        isLoading: false,
       };
 
     case 'SIGN_UP':

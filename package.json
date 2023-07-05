@@ -2,12 +2,13 @@
   "name": "file-server",
   "version": "1.0.0",
   "description": "source code for amalitech project asignment:)",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "view": "npm start --prefix view",
     "dev": "concurrently \"npm run server\" \"cd ./view && npm run start\"",
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "start": "node server.js"
   },
   "author": "Sydney Otutey Agbenu",
   "license": "ISC",

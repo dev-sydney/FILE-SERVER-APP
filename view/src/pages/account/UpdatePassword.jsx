@@ -70,6 +70,8 @@ const UpdatePassword = () => {
             type="password"
             name="newPassword"
             id="input-text"
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}"
+            title="Must contain at least one number and one uppercase and lowercase letter, and at least 5 or more characters"
             required
           />
           <span className="placeholder">New password:</span>
@@ -80,6 +82,8 @@ const UpdatePassword = () => {
             onChange={handleFormInputChange}
             type="password"
             name="passwordConfirm"
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}"
+            title="Must contain at least one number and one uppercase and lowercase letter, and at least 5 or more characters"
             required
           />
           <span className="placeholder">Confirm password:</span>

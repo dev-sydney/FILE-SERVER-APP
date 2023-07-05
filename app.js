@@ -33,6 +33,7 @@ app.get('*', (req, res) => {
 
 app.use(errorController);
 
-app.listen(port, function () {
-  console.log(`Listening to requests on ${port}`);
-});
+// app.listen(port, function () {
+//   console.log(`Listening to requests on ${port}`);
+// });
+module.exports = app;

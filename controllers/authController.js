@@ -191,7 +191,11 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
     'host'
   )}/account-verification`;
 
-  const emailFrom = `Lizzy from DDS ${process.env.MAIL_FROM}`;
+  const emailFrom = `Lizzy from Send-File ${
+    process.env.NODE_ENV === 'production'
+      ? process.env.MAIL_FROM
+      : process.env.TEST_MAIL_FROM
+  }`;
 
   try {
     await new Email(

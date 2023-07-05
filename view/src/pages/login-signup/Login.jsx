@@ -49,7 +49,14 @@ const Login = () => {
         </div>
 
         <div className="input-block">
-          <input type="password" name="password" onChange={onChange} required />
+          <input
+            type="password"
+            name="password"
+            onChange={onChange}
+            required
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}"
+            title="Must contain at least one number and one uppercase and lowercase letter, and at least 5 or more characters"
+          />
           <span className="placeholder">Password:</span>
         </div>
 

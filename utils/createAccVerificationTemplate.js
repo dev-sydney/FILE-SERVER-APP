@@ -96,7 +96,7 @@ const accountVerificationTemplate = (url, verificationCode) => `<!DOCTYPE html>
 
   <!-- start preheader -->
   <div class="preheader" style="display: none; max-width: 0; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: #fff; opacity: 0;">
-    DDS account verification
+    Send-File account verification
   </div>
   <!-- end preheader -->
 
@@ -116,7 +116,7 @@ const accountVerificationTemplate = (url, verificationCode) => `<!DOCTYPE html>
             <td align="center" valign="top" style="padding: 36px 24px;">
             <!-- REPLACE THE H2 BELOW WITH AN IMAGE-->
               <a href="#" target="_blank" style="display: inline-block;">
-                <h2>DDS</>
+                <h2>Send-File</h2>
               </a>
             </td>
           </tr>

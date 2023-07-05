@@ -60,6 +60,8 @@ const ResetPassword = () => {
             onChange={handleFormInputChange}
             type="password"
             required
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}"
+            title="Must contain at least one number and one uppercase and lowercase letter, and at least 5 or more characters"
           />
           <span className="placeholder">Password: </span>
         </div>
@@ -69,6 +71,8 @@ const ResetPassword = () => {
             onChange={handleFormInputChange}
             type="password"
             required
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}"
+            title="Must contain at least one number and one uppercase and lowercase letter, and at least 5 or more characters"
           />
           <span className="placeholder">Confirm password: </span>
         </div>

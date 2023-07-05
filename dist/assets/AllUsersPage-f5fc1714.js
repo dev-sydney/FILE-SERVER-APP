@@ -1,1 +1,0 @@
-import{j as s}from"./index-7c942149.js";import{U as e}from"./UsersTable-6c328daa.js";const t=()=>s.jsxs("div",{className:"all-users-page",children:[s.jsx("h2",{style:{textAlign:"left",marginBottom:"1em"},children:"All users"}),s.jsx(e,{})]});export{t as default};

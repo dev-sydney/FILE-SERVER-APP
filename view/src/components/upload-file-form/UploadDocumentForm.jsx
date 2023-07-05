@@ -104,6 +104,7 @@ const UploadDocumentForm = ({ setIsModalActive }) => {
             id=""
             onChange={onChange}
             className="file-input"
+            accept="image/*,video/*,audio/*,.pdf"
           />
           <span className="placeholder">File:</span>
         </div>
