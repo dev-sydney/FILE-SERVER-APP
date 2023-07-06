@@ -79,17 +79,22 @@ export const UserContextProvider = ({ children }) => {
         },
         body: JSON.stringify(formData),
       });
-      if (res.status === 201) {
-        //TODO: Get the JSON data from the response
-        const results = await res.json();
+      //TODO: Get the JSON data from the response
+      const results = await res.json();
+      if (res.status === 200) {
         //TODO: Dispatch to the reducer to set the context state
         dispatch({
           type: 'SIGN_UP',
           payload: results.message,
         });
+      } else {
+        throw new Error(results.message);
       }
     } catch (err) {
-      console.log(err);
+      dispatch({
+        type: 'SIGN_UP_ERROR',
+        payload: err.message,
+      });
     }
   };
 

@@ -26,7 +26,14 @@ const userReducer = (state, action) => {
       return {
         ...state,
         isLoading: false,
-        signUpSuccessMessage: action.payload,
+        userAlert: action.payload,
+      };
+    case 'SIGN_UP_ERROR':
+      //   localStorage.setItem('DDS_USER', JSON.stringify(action.payload));
+      return {
+        ...state,
+        isLoading: false,
+        userAlert: action.payload,
       };
     case 'LOGOUT':
       localStorage.removeItem('DDS_USER');

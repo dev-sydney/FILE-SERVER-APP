@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from 'react';
 import userContext from '../../contexts/UserContext';
 import './login-signup-style.scss';
 import { Link } from 'react-router-dom';
-import { UilSpinner } from '@iconscout/react-unicons';
+import { UilSpinner, UilInfoCircle } from '@iconscout/react-unicons';
 
 const Signup = () => {
   const userContxt = useContext(userContext);
@@ -28,6 +28,12 @@ const Signup = () => {
         }}
       >
         <h2>SIGN UP</h2>
+        {userContxt?.userAlert && (
+          <div className="component-alert">
+            <UilInfoCircle size="1.5em" style={{ margin: 'auto 0.5em' }} />
+            <b style={{ margin: 'auto 0' }}>{userContxt.userAlert}</b>
+          </div>
+        )}
         <div className="input-block">
           <input
             required
