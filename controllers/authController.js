@@ -216,7 +216,10 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
 
     console.log(err);
     return next(
-      new GlobalAppError('Error sending Email, please try again...', 500)
+      new GlobalAppError(
+        'Error sending verification email, please try again, signing up again.',
+        500
+      )
     );
   }
 });
