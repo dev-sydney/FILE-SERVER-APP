@@ -9,7 +9,7 @@ const pool = require('./../model/database');
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     // cb(null, `${__dirname}/../view/public/files/`);
-    cb(null, `${___dirname}/../dist/files/`);
+    cb(null, `${__dirname}/../dist/files/`);
   },
   filename: (req, file, cb) => {
     const fileExt = file.mimetype.split('/')[1];
