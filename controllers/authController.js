@@ -170,7 +170,7 @@ exports.signupUser = catchAsyncError(async (req, res, next) => {
     .toISOString()
     .split('T')
     .join(' ')
-    .replace('Z', '');
+    .replace('Z', ''); //YYYY-MM-DD hh:mm:ss
 
   delete obj['password_confirm'];
 

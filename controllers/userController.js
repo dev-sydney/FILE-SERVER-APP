@@ -43,7 +43,7 @@ exports.resizeAccountPhoto = catchAsyncError(async (req, res, next) => {
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`view/public/img/users/${req.file.filename}`);
+    .toFile(`./../dist/img/users/${req.file.filename}`);
 
   next();
 });
